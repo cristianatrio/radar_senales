@@ -1,6 +1,6 @@
 # Radar de Señales
 
-[![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](.github/workflows/ci.yml)
+[![CI](https://github.com/cristianatrio/radar_senales/actions/workflows/ci.yml/badge.svg)](https://github.com/cristianatrio/radar_senales/actions/workflows/ci.yml)
 ![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)
 ![Power BI PBIP](https://img.shields.io/badge/Power%20BI-PBIP%20%2B%20TMDL-F2C811)
 ![ES / EN](https://img.shields.io/badge/informe-ES%20%2F%20EN-4F46E5)
