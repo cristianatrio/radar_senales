@@ -1,0 +1,66 @@
+# ------------------------------------------------------------
+# Secretos y configuración local (NUNCA versionar)
+# ------------------------------------------------------------
+.env
+.env.*
+!.env.example
+ripio_config.txt
+telegram_config.txt
+*_config.txt
+!*_config.example.txt
+*.pem
+*.key
+
+# ------------------------------------------------------------
+# Datos privados y salidas locales
+# ------------------------------------------------------------
+output/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.db.lock
+*.respaldo-*
+*.sqlite
+*.sqlite3
+posiciones*.csv
+!posiciones.example.csv
+logs/
+*.log
+
+# Informes Power BI con datos reales (la demo pública usa CSV sintéticos)
+*.pbix
+*.pbit
+*.pbip
+!powerbi/demo_publica/RadarDemo.pbip
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+
+# Documentos internos de auditoría/prepublicación
+AUDITORIA_*.md
+PROMPT_PARA_CLAUDE.md
+
+# ------------------------------------------------------------
+# Python, entornos y caches
+# ------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+env/
+.idea/
+.vscode/
+
+# ------------------------------------------------------------
+# Respaldos, referencias visuales y documentos de trabajo internos
+# ------------------------------------------------------------
+_backup*/
+_refs/
+_tmp_*.py
+powerbi/demo_publica/CHANGELOG_PORTFOLIO.md
+powerbi/demo_publica/DIAGNOSTICO_PORTFOLIO.md

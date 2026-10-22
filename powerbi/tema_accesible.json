@@ -1,0 +1,19 @@
+{
+  "name": "Radar accesible (Okabe-Ito)",
+  "dataColors": [
+    "#0072B2",
+    "#56B4E9",
+    "#7F7F7F",
+    "#E69F00",
+    "#B34700",
+    "#CC79A7",
+    "#009E73",
+    "#F0E442"
+  ],
+  "background": "#FFFFFF",
+  "foreground": "#1F1F1F",
+  "tableAccent": "#0072B2",
+  "good": "#0072B2",
+  "neutral": "#7F7F7F",
+  "bad": "#B34700"
+}

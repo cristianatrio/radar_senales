@@ -1,0 +1,77 @@
+/// Calendario diario (UTC) que cubre todas las velas y corridas. Marcada como tabla de fechas.
+table dim_fecha
+	lineageTag: 4a7b493e-c75d-5087-842d-6057cb7b7978
+	dataCategory: Time
+
+	column fecha
+		dataType: dateTime
+		isKey
+		formatString: yyyy-mm-dd
+		lineageTag: 56bde62a-361e-590c-84be-29b542699d2a
+		summarizeBy: none
+		sourceColumn: fecha
+
+		annotation SummarizationSetBy = User
+
+	column anio
+		dataType: int64
+		formatString: 0
+		lineageTag: 09091ab4-0817-5f4a-8317-0688834a45be
+		summarizeBy: none
+		sourceColumn: anio
+
+		annotation SummarizationSetBy = User
+
+	column mes
+		dataType: int64
+		formatString: 0
+		lineageTag: b525298e-f12d-5d3d-a203-71a6688142f5
+		summarizeBy: none
+		sourceColumn: mes
+
+		annotation SummarizationSetBy = User
+
+	column anio_mes
+		dataType: string
+		lineageTag: c846059b-326f-5858-99cc-b36a6786e60a
+		summarizeBy: none
+		sourceColumn: anio_mes
+
+		annotation SummarizationSetBy = User
+
+	column dia
+		dataType: int64
+		formatString: 0
+		lineageTag: 9c4dac9d-d3f3-5e2b-8b9b-cc4c53e84bd8
+		summarizeBy: none
+		sourceColumn: dia
+
+		annotation SummarizationSetBy = User
+
+	column dia_semana
+		dataType: int64
+		formatString: 0
+		lineageTag: e086b63a-e845-5c6a-a3ed-bd30e4d9f024
+		summarizeBy: none
+		sourceColumn: dia_semana
+
+		annotation SummarizationSetBy = User
+
+	column es_habil
+		dataType: boolean
+		lineageTag: 194b98e0-be0b-58e6-aa0d-4b3ebdd4aa55
+		summarizeBy: none
+		sourceColumn: es_habil
+
+		annotation SummarizationSetBy = User
+
+	partition dim_fecha = m
+		mode: import
+		source =
+				let
+				    Tabla = CargarCsv("dim_fecha.csv", {{"fecha", type date}, {"anio", Int64.Type}, {"mes", Int64.Type}, {"anio_mes", type text}, {"dia", Int64.Type}, {"dia_semana", Int64.Type}, {"es_habil", type logical}})
+				in
+				    Tabla
+
+	annotation PBI_ResultType = Table
+

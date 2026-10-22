@@ -1,0 +1,58 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/1.4.0/schema.json",
+  "displayName": "Quality (EN) · Abrir filtros",
+  "name": "bmOpend7f9b1c3",
+  "options": {
+    "targetVisualNames": [
+      "flt_panel",
+      "flt_cerrar",
+      "flt_tipo",
+      "flt_fuente",
+      "flt_timeframe",
+      "flt_senal"
+    ],
+    "applyOnlyToTargetVisuals": true,
+    "suppressData": true,
+    "suppressActiveSection": true
+  },
+  "explorationState": {
+    "version": "1.3",
+    "activeSection": "d7f9b1c3e5a26804",
+    "sections": {
+      "d7f9b1c3e5a26804": {
+        "visualContainers": {
+          "flt_panel": {
+            "singleVisual": {
+              "visualType": "shape"
+            }
+          },
+          "flt_cerrar": {
+            "singleVisual": {
+              "visualType": "actionButton"
+            }
+          },
+          "flt_tipo": {
+            "singleVisual": {
+              "visualType": "slicer"
+            }
+          },
+          "flt_fuente": {
+            "singleVisual": {
+              "visualType": "slicer"
+            }
+          },
+          "flt_timeframe": {
+            "singleVisual": {
+              "visualType": "slicer"
+            }
+          },
+          "flt_senal": {
+            "singleVisual": {
+              "visualType": "slicer"
+            }
+          }
+        }
+      }
+    }
+  }
+}

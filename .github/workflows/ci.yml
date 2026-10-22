@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: Tests offline y análisis estático (${{ matrix.os }}, Python ${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ["3.10", "3.12"]
+    env:
+      # Los tests bloquean la red; además no hay credenciales en CI.
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - name: Instalar dependencias fijadas
+        run: python -m pip install -r requirements.txt -r requirements-dev.txt -c constraints.txt
+      - name: Ruff (lint + reglas de seguridad)
+        run: ruff check .
+      - name: Compilar todos los módulos
+        run: python -m compileall -q .
+      - name: Tests offline
+        run: python -m pytest
+
+  auditoria:
+    name: Auditoría de dependencias (pip-audit)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instalar pip-audit
+        run: python -m pip install pip-audit
+      # pip-audit no acepta -c, así que se unen los tres archivos de versiones fijadas.
+      - name: Auditar versiones fijadas
+        run: |
+          grep -hvE '^\s*(#|$)' requirements.txt requirements-dev.txt constraints.txt | sort -u > deps-fijadas.txt
+          pip-audit -r deps-fijadas.txt --no-deps --desc on
+

@@ -1,0 +1,264 @@
+/// Una señal por activo y corrida. es_ultima marca la señal vigente de cada activo; fuerza es un puntaje heurístico (-9..9), no una probabilidad.
+table fact_senales
+	lineageTag: a9225a87-3e35-55aa-8a10-f2bc2ca83480
+
+	column id
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: dc1b1723-cd29-5178-a40b-89bc2969f3cc
+		summarizeBy: none
+		sourceColumn: id
+
+		annotation SummarizationSetBy = User
+
+	column run_id
+		dataType: string
+		isHidden
+		lineageTag: 4fb75f09-5ea5-5ba7-bf09-27bb1dc1ec76
+		summarizeBy: none
+		sourceColumn: run_id
+
+		annotation SummarizationSetBy = User
+
+	column ticker
+		dataType: string
+		isHidden
+		lineageTag: f09c23f8-c147-5684-a783-a389b2ab22c1
+		summarizeBy: none
+		sourceColumn: ticker
+
+		annotation SummarizationSetBy = User
+
+	column tipo
+		dataType: string
+		isHidden
+		lineageTag: 3889b85e-63c0-5dab-a36a-bd2931459c2d
+		summarizeBy: none
+		sourceColumn: tipo
+
+		annotation SummarizationSetBy = User
+
+	column fuente
+		dataType: string
+		isHidden
+		lineageTag: be54bfbb-896a-5f48-afa9-471d88c71c43
+		summarizeBy: none
+		sourceColumn: fuente
+
+		annotation SummarizationSetBy = User
+
+	column timeframe
+		dataType: string
+		isHidden
+		lineageTag: 8d8cb27f-37d5-597f-bcfd-bc720f476cc7
+		summarizeBy: none
+		sourceColumn: timeframe
+
+		annotation SummarizationSetBy = User
+
+	column mercado
+		dataType: string
+		isHidden
+		lineageTag: 40654909-8e43-599e-9676-edc747f34994
+		summarizeBy: none
+		sourceColumn: mercado
+
+		annotation SummarizationSetBy = User
+
+	column moneda
+		dataType: string
+		isHidden
+		lineageTag: 19c7cab3-6a95-5082-8a47-6d932ab25ae7
+		summarizeBy: none
+		sourceColumn: moneda
+
+		annotation SummarizationSetBy = User
+
+	column estado_dato
+		dataType: string
+		lineageTag: 3cf5da83-940a-5eaa-80b5-6ae7d3243747
+		summarizeBy: none
+		sourceColumn: estado_dato
+
+		annotation SummarizationSetBy = User
+
+	column generado_utc
+		dataType: dateTime
+		formatString: yyyy-mm-dd hh:nn:ss
+		lineageTag: d6ea7e62-d855-55a6-8138-8c1db949fa91
+		summarizeBy: none
+		sourceColumn: generado_utc
+
+		annotation SummarizationSetBy = User
+
+	column capturado_utc
+		dataType: dateTime
+		formatString: yyyy-mm-dd hh:nn:ss
+		lineageTag: 16cfc983-f706-58ec-a4c6-f2b506255c5f
+		summarizeBy: none
+		sourceColumn: capturado_utc
+
+		annotation SummarizationSetBy = User
+
+	column vela_utc
+		dataType: dateTime
+		formatString: yyyy-mm-dd hh:nn:ss
+		lineageTag: 8c436c98-3c0f-5691-ad38-f9d56a94049c
+		summarizeBy: none
+		sourceColumn: vela_utc
+
+		annotation SummarizationSetBy = User
+
+	column precio
+		dataType: double
+		formatString: #,0.0000
+		lineageTag: cf76b412-1838-5f49-976d-d260a54a326c
+		summarizeBy: none
+		sourceColumn: precio
+
+		annotation SummarizationSetBy = User
+
+	column señal
+		dataType: string
+		isHidden
+		lineageTag: b8be4ef3-c39b-5e01-ba8f-edcd8073d693
+		summarizeBy: none
+		sourceColumn: señal
+
+		annotation SummarizationSetBy = User
+
+	column fuerza
+		dataType: int64
+		formatString: 0
+		lineageTag: 5dd9edd1-834e-5d97-b14b-4f80e900c9e9
+		summarizeBy: none
+		sourceColumn: fuerza
+
+		annotation SummarizationSetBy = User
+
+	column rsi
+		dataType: double
+		formatString: #,0.00
+		lineageTag: d0c31ff9-5e69-55cc-9a74-7c2d4427ab40
+		summarizeBy: none
+		sourceColumn: rsi
+
+		annotation SummarizationSetBy = User
+
+	column macd_hist
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 16b2292a-d855-505c-9dc5-e641de576084
+		summarizeBy: none
+		sourceColumn: macd_hist
+
+		annotation SummarizationSetBy = User
+
+	column vol_relativo
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 0bbbe5dc-c604-5b5e-b637-25ce48a80cd9
+		summarizeBy: none
+		sourceColumn: vol_relativo
+
+		annotation SummarizationSetBy = User
+
+	column ma_corta
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 4919ed96-367a-5a6a-bb16-256c810b2e73
+		summarizeBy: none
+		sourceColumn: ma_corta
+
+		annotation SummarizationSetBy = User
+
+	column ma_larga
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 3660b172-9fea-57bf-836d-ecf0431a1f3b
+		summarizeBy: none
+		sourceColumn: ma_larga
+
+		annotation SummarizationSetBy = User
+
+	column motivos
+		dataType: string
+		lineageTag: dae75c1d-a23d-5262-b801-7fedd423f8ec
+		summarizeBy: none
+		sourceColumn: motivos
+
+		annotation SummarizationSetBy = User
+
+	column es_ultima
+		dataType: boolean
+		isHidden
+		lineageTag: af6ece4e-9316-5637-884f-02935d6b0666
+		summarizeBy: none
+		sourceColumn: es_ultima
+
+		annotation SummarizationSetBy = User
+
+	column cambio_senal
+		dataType: boolean
+		isHidden
+		lineageTag: 261acd0e-fef7-5259-9145-6f5ccd4a6c61
+		summarizeBy: none
+		sourceColumn: cambio_senal
+
+		annotation SummarizationSetBy = User
+
+	column fecha
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 58155e5b-aee7-569a-a03f-02f9bd70aa7d
+		summarizeBy: none
+		sourceColumn: fecha
+
+		annotation SummarizationSetBy = User
+
+	/// Día UTC en que corrió el radar y generó la señal. Eje diario de la evolución de señales.
+	column 'Día de corrida' = DATE ( YEAR ( [generado_utc] ), MONTH ( [generado_utc] ), DAY ( [generado_utc] ) )
+		dataType: dateTime
+		formatString: dd mmm
+		lineageTag: 989ba19c-d1e7-5d87-b24d-f18bb8cf2a7d
+		summarizeBy: none
+
+		annotation SummarizationSetBy = User
+
+	/// Estado del dato en palabras (Válido, Desactualizado, Error del proveedor, Sin datos); deriva de estado_dato.
+	column 'Estado del dato' = SWITCH ( [estado_dato], "valido", "Válido", "obsoleto", "Desactualizado", "error_proveedor", "Error del proveedor", "sin_datos", "Sin datos", "historial_insuficiente", "Historial insuficiente", "dato_invalido", "Dato inválido", [estado_dato] )
+		dataType: string
+		lineageTag: ce1b0e35-b1f7-561a-be64-9bc9a7599478
+		summarizeBy: none
+
+		annotation SummarizationSetBy = User
+
+	/// Data status in words (English pages); derived from estado_dato.
+	column 'Data status' = SWITCH ( [estado_dato], "valido", "Valid", "obsoleto", "Stale", "error_proveedor", "Provider error", "sin_datos", "No data", "historial_insuficiente", "Insufficient history", "dato_invalido", "Invalid data", [estado_dato] )
+		dataType: string
+		lineageTag: f641c832-774e-5a64-9771-3c75b0e7e299
+		summarizeBy: none
+
+		annotation SummarizationSetBy = User
+
+	/// Run day as English text (dd mmm) for the daily chart on the English pages; sorted by Día de corrida.
+	column 'Run day' = FORMAT ( [Día de corrida], "dd mmm", "en-US" )
+		dataType: string
+		lineageTag: 4ba61589-dc60-5bb1-a7ed-8e9fa47b9d48
+		summarizeBy: none
+		sortByColumn: 'Día de corrida'
+
+		annotation SummarizationSetBy = User
+
+	partition fact_senales = m
+		mode: import
+		source =
+				let
+				    Tabla = CargarCsv("fact_senales.csv", {{"id", Int64.Type}, {"run_id", type text}, {"ticker", type text}, {"tipo", type text}, {"fuente", type text}, {"timeframe", type text}, {"mercado", type text}, {"moneda", type text}, {"estado_dato", type text}, {"generado_utc", type datetime}, {"capturado_utc", type datetime}, {"vela_utc", type datetime}, {"precio", type number}, {"señal", type text}, {"fuerza", Int64.Type}, {"rsi", type number}, {"macd_hist", type number}, {"vol_relativo", type number}, {"ma_corta", type number}, {"ma_larga", type number}, {"motivos", type text}, {"es_ultima", type logical}, {"cambio_senal", type logical}, {"fecha", type date}})
+				in
+				    Tabla
+
+	annotation PBI_ResultType = Table
+

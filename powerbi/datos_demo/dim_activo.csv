@@ -1,0 +1,8 @@
+ticker,tipo,instrumento,mercado,moneda,fuente,timeframe,es_sintetico
+ANDES.BA,accion_arg,acción argentina,BYMA,ARS,yahoo,1d,True
+PAMPA.BA,accion_arg,acción argentina,BYMA,ARS,yahoo,1d,True
+ACME,accion_us,acción EE. UU.,NYSE/Nasdaq,USD,yahoo,1d,True
+GLOBX,accion_us,acción EE. UU.,NYSE/Nasdaq,USD,yahoo,1d,True
+ALFAUSDT,cripto,par cripto/USDT,Binance spot,USDT,binance,1h,True
+BETAUSDT,cripto,par cripto/USDT,Binance spot,USDT,binance,1h,True
+DELTAUSDT,cripto,par cripto/USDT,Binance spot,USDT,binance,1h,True

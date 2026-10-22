@@ -1,0 +1,176 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "d7f9b1c3e5a26804",
+  "displayName": "Quality (EN)",
+  "displayOption": "FitToPage",
+  "height": 720,
+  "width": 1280,
+  "visualInteractions": [
+    {
+      "source": "flt_tipo",
+      "target": "flt_fuente",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_tipo",
+      "target": "flt_timeframe",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_tipo",
+      "target": "flt_senal",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_fuente",
+      "target": "flt_tipo",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_fuente",
+      "target": "flt_timeframe",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_fuente",
+      "target": "flt_senal",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_timeframe",
+      "target": "flt_tipo",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_timeframe",
+      "target": "flt_fuente",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_timeframe",
+      "target": "flt_senal",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_senal",
+      "target": "flt_tipo",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_senal",
+      "target": "flt_fuente",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_senal",
+      "target": "flt_timeframe",
+      "type": "NoFilter"
+    },
+    {
+      "source": "graf_estado_dato",
+      "target": "graf_frescura_fuente",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_estado_dato",
+      "target": "tabla_obsoletos",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_estado_dato",
+      "target": "kpi_datos_validos",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_estado_dato",
+      "target": "kpi_activos_obsoletos",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_estado_dato",
+      "target": "kpi_horas_ultima_vela",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_estado_dato",
+      "target": "card_lectura_calidad",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_estado_dato",
+      "target": "hdr_subtitulo",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_frescura_fuente",
+      "target": "graf_estado_dato",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_frescura_fuente",
+      "target": "tabla_obsoletos",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_frescura_fuente",
+      "target": "kpi_datos_validos",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_frescura_fuente",
+      "target": "kpi_activos_obsoletos",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_frescura_fuente",
+      "target": "kpi_horas_ultima_vela",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_frescura_fuente",
+      "target": "card_lectura_calidad",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_frescura_fuente",
+      "target": "hdr_subtitulo",
+      "type": "DataFilter"
+    },
+    {
+      "source": "tabla_obsoletos",
+      "target": "graf_estado_dato",
+      "type": "DataFilter"
+    },
+    {
+      "source": "tabla_obsoletos",
+      "target": "graf_frescura_fuente",
+      "type": "DataFilter"
+    },
+    {
+      "source": "tabla_obsoletos",
+      "target": "kpi_datos_validos",
+      "type": "DataFilter"
+    },
+    {
+      "source": "tabla_obsoletos",
+      "target": "kpi_activos_obsoletos",
+      "type": "DataFilter"
+    },
+    {
+      "source": "tabla_obsoletos",
+      "target": "kpi_horas_ultima_vela",
+      "type": "DataFilter"
+    },
+    {
+      "source": "tabla_obsoletos",
+      "target": "card_lectura_calidad",
+      "type": "DataFilter"
+    },
+    {
+      "source": "tabla_obsoletos",
+      "target": "hdr_subtitulo",
+      "type": "DataFilter"
+    }
+  ],
+  "visibility": "HiddenInViewMode"
+}

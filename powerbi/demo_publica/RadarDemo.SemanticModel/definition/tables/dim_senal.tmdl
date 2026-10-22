@@ -1,0 +1,84 @@
+/// Catálogo de señales heurísticas con orden, símbolo (▲ ▼ ■ ⚠ ∅) y descripción de la regla que las activa.
+table dim_senal
+	lineageTag: ff775160-12ae-5b95-863f-18238b9834f0
+
+	column señal
+		dataType: string
+		lineageTag: 31a422c9-6f55-53bd-89f7-844989cb5acc
+		summarizeBy: none
+		sourceColumn: señal
+		sortByColumn: orden
+
+		annotation SummarizationSetBy = User
+
+	column orden
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: f1756d53-2fab-5157-aad1-38efa67c8fe3
+		summarizeBy: none
+		sourceColumn: orden
+
+		annotation SummarizationSetBy = User
+
+	column simbolo
+		dataType: string
+		lineageTag: 7513e06a-0604-56d5-a063-80932238cd57
+		summarizeBy: none
+		sourceColumn: simbolo
+
+		annotation SummarizationSetBy = User
+
+	column descripcion
+		dataType: string
+		lineageTag: c159f49f-fefe-5798-9ea8-2383e751e280
+		summarizeBy: none
+		sourceColumn: descripcion
+
+		annotation SummarizationSetBy = User
+
+	/// Símbolo + nombre de la señal, para distinguirla sin depender solo del color.
+	column 'Señal con símbolo' = [simbolo] & " " & [señal]
+		dataType: string
+		lineageTag: 46ae7d7b-b0c9-5479-9100-ec6ca7cd2f45
+		summarizeBy: none
+		sortByColumn: orden
+
+		annotation SummarizationSetBy = User
+
+	/// Símbolo + nombre de la señal en palabras (Compra fuerte, Esperar, …), ordenada como la regla.
+	column 'Señal en palabras' = [simbolo] & " " & SWITCH ( [señal], "COMPRA_FUERTE", "Compra fuerte", "COMPRA_PROBABLE", "Compra probable", "ESPERAR", "Esperar", "VENTA_PROBABLE", "Venta probable", "VENTA_FUERTE", "Venta fuerte", "RIESGO_ALTO", "Riesgo alto", "SIN_DATOS", "Sin datos", [señal] )
+		dataType: string
+		lineageTag: 9da108fa-53b0-5633-b088-71705ad52d8f
+		summarizeBy: none
+		sortByColumn: orden
+
+		annotation SummarizationSetBy = User
+
+	/// Symbol + signal name in English, sorted like the rule.
+	column 'Signal' = [simbolo] & " " & SWITCH ( [señal], "COMPRA_FUERTE", "Strong buy", "COMPRA_PROBABLE", "Probable buy", "ESPERAR", "Hold", "VENTA_PROBABLE", "Probable sell", "VENTA_FUERTE", "Strong sell", "RIESGO_ALTO", "High risk", "SIN_DATOS", "No data", [señal] )
+		dataType: string
+		lineageTag: 74f7ce97-5e1d-5e5e-b9f0-4d59e08be69e
+		summarizeBy: none
+		sortByColumn: orden
+
+		annotation SummarizationSetBy = User
+
+	/// Rule that triggers each signal, in English.
+	column 'Rule' = SWITCH ( [señal], "COMPRA_FUERTE", "Score ≥ 4 with at least 2 bullish families", "COMPRA_PROBABLE", "Score between 2 and 3", "ESPERAR", "Score between -1 and 1", "VENTA_PROBABLE", "Score between -3 and -2", "VENTA_FUERTE", "Score ≤ -4 with at least 2 bearish families", "RIESGO_ALTO", "Breakout on heavy volume with a weak score (|score| < 3)", "SIN_DATOS", "Not enough history to compute every indicator", [descripcion] )
+		dataType: string
+		lineageTag: 3982ed66-cfd3-50c9-bcbc-b7ff9a6e429a
+		summarizeBy: none
+
+		annotation SummarizationSetBy = User
+
+	partition dim_senal = m
+		mode: import
+		source =
+				let
+				    Tabla = CargarCsv("dim_senal.csv", {{"señal", type text}, {"orden", Int64.Type}, {"simbolo", type text}, {"descripcion", type text}})
+				in
+				    Tabla
+
+	annotation PBI_ResultType = Table
+

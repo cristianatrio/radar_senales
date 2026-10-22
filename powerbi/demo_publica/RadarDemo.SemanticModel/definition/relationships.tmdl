@@ -1,0 +1,36 @@
+relationship b2b99eac-e02e-5bbc-910f-1fa11bc953eb
+	fromColumn: fact_senales.ticker
+	toColumn: dim_activo.ticker
+
+relationship 8fa5ca96-4df9-5530-94da-615ccc6c4e63
+	fromColumn: fact_precios.ticker
+	toColumn: dim_activo.ticker
+
+relationship ddd5f913-2785-553b-96a2-e693a7ff87bf
+	fromColumn: fact_resultados_activo.ticker
+	toColumn: dim_activo.ticker
+
+relationship 2eb64f8a-b401-5edd-a01e-70b3f38de550
+	fromColumn: fact_senales.fecha
+	toColumn: dim_fecha.fecha
+
+relationship f2c1d4a7-9403-5282-8bba-b76cd102f3a4
+	fromColumn: fact_precios.fecha
+	toColumn: dim_fecha.fecha
+
+relationship 2930520c-4336-5893-aa34-a04b9fd0859e
+	fromColumn: fact_resultados_activo.fecha
+	toColumn: dim_fecha.fecha
+
+relationship 94a5e640-88c5-5a40-8b6b-08fc2c8fa7f2
+	fromColumn: fact_senales.señal
+	toColumn: dim_senal.señal
+
+relationship 365e2bdb-d5a2-53d6-9910-e78b44d6b335
+	fromColumn: fact_senales.run_id
+	toColumn: dim_corrida.run_id
+
+relationship a2bc3594-5572-5ba6-884d-cd3ee37e6750
+	fromColumn: fact_resultados_activo.run_id
+	toColumn: dim_corrida.run_id
+

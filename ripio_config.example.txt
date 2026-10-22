@@ -1,0 +1,13 @@
+# Plantilla SIN secretos. Preferí variables de entorno (RIPIO_API_KEY y
+# RIPIO_SECRET_KEY). Si usás archivo: copiá este a ripio_config.txt
+# (ignorado por git) y completá los valores.
+#
+# Creá la API key en Ripio con permisos de SOLO LECTURA (sin retiros ni
+# operaciones) y, si es posible, restringida a tu IP.
+# Probá la conexión con: python verificar_ripio.py --consultar
+#
+# Si una clave se publicó alguna vez, revocala en Ripio y generá otra:
+# borrarla del archivo no alcanza.
+
+API_KEY=
+SECRET_KEY=

@@ -1,0 +1,706 @@
+/// Tabla de medidas explícitas (sin columnas visibles). Ninguna medida suma RSI, fuerza ni precios.
+table _Medidas
+	lineageTag: 2200ce3a-ad6f-5fdb-a865-13b9b05a2d3b
+
+	/// Activos distintos con una señal vigente (es_ultima). Ignora el filtro de fechas. Nunca cuenta filas de precios.
+	measure 'Activos con señal actual' = CALCULATE ( DISTINCTCOUNT ( fact_senales[ticker] ), fact_senales[es_ultima] = TRUE (), REMOVEFILTERS ( dim_fecha ) )
+		formatString: 0
+		displayFolder: 1. Señal actual
+		lineageTag: 14a56497-acd8-5ee2-af86-d1c23ac87bb1
+
+	/// Activos cuya señal vigente es COMPRA_FUERTE o COMPRA_PROBABLE.
+	measure 'Compras actuales' = CALCULATE ( [Activos con señal actual], dim_senal[señal] IN { "COMPRA_FUERTE", "COMPRA_PROBABLE" } )
+		formatString: 0
+		displayFolder: 1. Señal actual
+		lineageTag: 8756c587-26c4-5060-9475-bc6b2491e1e6
+
+	/// Activos cuya señal vigente es VENTA_FUERTE o VENTA_PROBABLE.
+	measure 'Ventas actuales' = CALCULATE ( [Activos con señal actual], dim_senal[señal] IN { "VENTA_FUERTE", "VENTA_PROBABLE" } )
+		formatString: 0
+		displayFolder: 1. Señal actual
+		lineageTag: 7b63d3d8-6f77-590f-900c-7102b2294eff
+
+	/// Activos cuya señal vigente es ESPERAR.
+	measure 'Esperar actuales' = CALCULATE ( [Activos con señal actual], dim_senal[señal] = "ESPERAR" )
+		formatString: 0
+		displayFolder: 1. Señal actual
+		lineageTag: 42860b49-3092-50c7-8b50-ed9341ad8259
+
+	/// Participación de cada señal sobre el total de activos con señal vigente.
+	measure '% de activos por señal' = DIVIDE ( [Activos con señal actual], CALCULATE ( [Activos con señal actual], REMOVEFILTERS ( dim_senal ) ) )
+		formatString: 0%
+		displayFolder: 1. Señal actual
+		lineageTag: 3713b9de-32a9-5ba0-9db7-3c9fbf93f7d0
+
+	/// Activos cuya señal vigente se calculó con datos válidos (ni obsoletos ni incompletos).
+	measure 'Activos actuales con dato válido' = CALCULATE ( [Activos con señal actual], fact_senales[estado_dato] = "valido" )
+		formatString: 0
+		displayFolder: 1. Señal actual
+		lineageTag: bcbedd18-4f83-52b3-a665-b29e1a12ab63
+
+	/// Señal vigente del activo seleccionado.
+	measure 'Señal actual' = IF ( HASONEVALUE ( dim_activo[ticker] ), CALCULATE ( SELECTEDVALUE ( fact_senales[señal] ), fact_senales[es_ultima] = TRUE (), REMOVEFILTERS ( dim_fecha ) ) )
+		displayFolder: 1. Señal actual
+		lineageTag: 977b67b0-b5e6-5f55-9591-180e5f153712
+
+	/// Señal vigente precedida por su símbolo (▲ ▼ ■ ⚠ ∅) para no depender solo del color.
+	measure 'Símbolo señal actual' =
+			VAR s = [Señal actual]
+			RETURN IF ( NOT ISBLANK ( s ), LOOKUPVALUE ( dim_senal[simbolo], dim_senal[señal], s ) & " " & s )
+		displayFolder: 1. Señal actual
+		lineageTag: 58e961c1-13e8-5e4f-a437-fdf081917441
+
+	/// Puntaje heurístico (-9 a 9) de la señal vigente. No es una probabilidad.
+	measure 'Fuerza actual' = IF ( HASONEVALUE ( dim_activo[ticker] ), CALCULATE ( SELECTEDVALUE ( fact_senales[fuerza] ), fact_senales[es_ultima] = TRUE (), REMOVEFILTERS ( dim_fecha ) ) )
+		formatString: +0;-0;0
+		displayFolder: 1. Señal actual
+		lineageTag: 11791e6f-58de-5569-a06e-9b8fc897d268
+
+	/// valido u obsoleto para la señal vigente del activo.
+	measure 'Estado del dato actual' = IF ( HASONEVALUE ( dim_activo[ticker] ), CALCULATE ( SELECTEDVALUE ( fact_senales[estado_dato] ), fact_senales[es_ultima] = TRUE (), REMOVEFILTERS ( dim_fecha ) ) )
+		displayFolder: 1. Señal actual
+		lineageTag: e2f25313-6aad-598e-b5cf-ddbde016f565
+
+	/// Condiciones que activaron la señal vigente.
+	measure 'Motivos actuales' = IF ( HASONEVALUE ( dim_activo[ticker] ), CALCULATE ( SELECTEDVALUE ( fact_senales[motivos] ), fact_senales[es_ultima] = TRUE (), REMOVEFILTERS ( dim_fecha ) ) )
+		displayFolder: 1. Señal actual
+		lineageTag: 32abf2a8-6816-5dda-af34-c834eb18c48a
+
+	/// Inicio (UTC) de la última vela cerrada usada por la señal vigente.
+	measure 'Vela actual (UTC)' = IF ( HASONEVALUE ( dim_activo[ticker] ), CALCULATE ( MAX ( fact_senales[vela_utc] ), fact_senales[es_ultima] = TRUE (), REMOVEFILTERS ( dim_fecha ) ) )
+		formatString: yyyy-mm-dd hh:nn:ss
+		displayFolder: 1. Señal actual
+		lineageTag: 3b80f699-dfd9-5290-b951-54314628f4c7
+
+	/// RSI de la última vela cerrada del activo. Reemplaza a cualquier suma de RSI.
+	measure 'RSI última vela' = IF ( HASONEVALUE ( dim_activo[ticker] ), CALCULATE ( MAX ( fact_precios[rsi] ), fact_precios[es_ultima_vela] = TRUE (), REMOVEFILTERS ( dim_fecha ) ) )
+		formatString: 0.00
+		displayFolder: 1. Señal actual
+		lineageTag: 99e48930-a0b2-5dff-83f1-3f3fa4f6a636
+
+	/// Cierre de la última vela del activo, en la moneda del activo.
+	measure 'Último cierre' = IF ( HASONEVALUE ( dim_activo[ticker] ), CALCULATE ( MAX ( fact_precios[close] ), fact_precios[es_ultima_vela] = TRUE (), REMOVEFILTERS ( dim_fecha ) ) )
+		formatString: #,0.0000
+		displayFolder: 1. Señal actual
+		lineageTag: 7cfdfcf4-daa3-574f-b01a-f1d7baa61b06
+
+	/// Último cierre dentro del período filtrado.
+	measure 'Último cierre en el período' = IF ( HASONEVALUE ( dim_activo[ticker] ), VAR ultimo = MAX ( fact_precios[timestamp_utc] ) RETURN CALCULATE ( MAX ( fact_precios[close] ), fact_precios[timestamp_utc] = ultimo ) )
+		formatString: #,0.0000
+		displayFolder: 1. Señal actual
+		lineageTag: ac76923d-3055-5a10-9941-a414f96fd6e0
+
+	/// Instante UTC de la última señal generada. En la demo es una fecha simulada.
+	measure 'Última actualización (UTC)' = CALCULATE ( MAX ( fact_senales[generado_utc] ), REMOVEFILTERS ( dim_fecha ) )
+		formatString: yyyy-mm-dd hh:nn:ss
+		displayFolder: 2. Frescura y calidad
+		lineageTag: 7cc23ed3-4edb-5e17-b890-359648d0c459
+
+	/// Compara contra la hora real actual: en la demo sintética siempre es grande.
+	measure 'Horas desde la última actualización' =
+			VAR ultima = [Última actualización (UTC)]
+			RETURN IF ( NOT ISBLANK ( ultima ), DATEDIFF ( ultima, UTCNOW (), MINUTE ) / 60 )
+		formatString: #,0.0
+		displayFolder: 2. Frescura y calidad
+		lineageTag: 10c26a87-15c6-5ce9-9634-b801cc83c333
+
+	/// Semáforo textual de frescura contra la hora real. No aplica a datos de demostración.
+	measure 'Estado de actualización' =
+			VAR h = [Horas desde la última actualización]
+			RETURN SWITCH ( TRUE (), ISBLANK ( h ), "∅ Sin datos", h <= 2, "● Al día", h <= 26, "◐ Con demora", "○ Desactualizado" )
+		displayFolder: 2. Frescura y calidad
+		lineageTag: ac21a163-1930-5a85-ac7b-19849087a449
+
+	/// completa, parcial, fallida o interrumpida.
+	measure 'Estado última corrida' = CALCULATE ( SELECTEDVALUE ( dim_corrida[estado] ), dim_corrida[es_ultima_corrida] = TRUE () )
+		displayFolder: 2. Frescura y calidad
+		lineageTag: 8c7f6af9-b596-54e0-9ab3-da1370234b3a
+
+	/// Activos sin dato válido en la última corrida.
+	measure 'Activos con problema (última corrida)' = CALCULATE ( DISTINCTCOUNT ( fact_resultados_activo[ticker] ), fact_resultados_activo[estado] <> "valido", dim_corrida[es_ultima_corrida] = TRUE (), REMOVEFILTERS ( dim_fecha ) )
+		formatString: 0
+		displayFolder: 2. Frescura y calidad
+		lineageTag: 986e3e2f-e35e-526f-abbd-534a74ef2b43
+
+	/// Proporción de consultas a proveedores con dato válido. Respeta filtros de fecha y activo.
+	measure 'Tasa de datos válidos' = DIVIDE ( CALCULATE ( COUNTROWS ( fact_resultados_activo ), fact_resultados_activo[estado] = "valido" ), COUNTROWS ( fact_resultados_activo ) )
+		formatString: 0.0%
+		displayFolder: 2. Frescura y calidad
+		lineageTag: 484517b2-0b93-5225-bfd1-41d61aa6f8a3
+
+	/// Consultas que fallaron por red, HTTP o formato.
+	measure 'Consultas con error de proveedor' = CALCULATE ( COUNTROWS ( fact_resultados_activo ), fact_resultados_activo[estado] = "error_proveedor" )
+		formatString: 0
+		displayFolder: 2. Frescura y calidad
+		lineageTag: e3c184da-c052-5907-8ce0-ea9e4d29a577
+
+	/// Una consulta por activo y corrida.
+	measure 'Consultas a proveedores' = COUNTROWS ( fact_resultados_activo )
+		formatString: #,0
+		displayFolder: 2. Frescura y calidad
+		lineageTag: 6cf966f7-c8ba-5e59-ac82-5fd5398adeaf
+
+	/// Ejecuciones del radar registradas.
+	measure 'Corridas registradas' = COUNTROWS ( dim_corrida )
+		formatString: #,0
+		displayFolder: 2. Frescura y calidad
+		lineageTag: 726dbe7a-3fa7-5d37-8496-aa5fb9a4ba7c
+
+	/// Filas de señales en el período filtrado.
+	measure 'Señales históricas (filas)' = COUNTROWS ( fact_senales )
+		formatString: #,0
+		displayFolder: 3. Historia
+		lineageTag: faacd0a7-e365-5e31-bfce-0ac75e1f6716
+
+	/// Activos distintos que tuvieron la señal en el período (un activo puede tener varias señales el mismo día).
+	measure 'Activos con la señal en el período' = DISTINCTCOUNT ( fact_senales[ticker] )
+		formatString: 0
+		displayFolder: 3. Historia
+		lineageTag: 1bfe939f-3f5a-5eaa-a2d4-5ea44e2e36da
+
+	/// Corridas en las que la señal del activo cambió respecto de la corrida anterior.
+	measure 'Cambios de señal' = CALCULATE ( COUNTROWS ( fact_senales ), fact_senales[cambio_senal] = TRUE () )
+		formatString: #,0
+		displayFolder: 3. Historia
+		lineageTag: a74a56eb-f403-5dc2-afec-0e2eba8896db
+
+	/// Activo que muestran los gráficos de Mercado: el seleccionado o, si no hay selección única, el primero (alfabético) entre los visibles.
+	measure 'Activo graficado' = IF ( HASONEVALUE ( dim_activo[ticker] ), SELECTEDVALUE ( dim_activo[ticker] ), CALCULATE ( MIN ( dim_activo[ticker] ), ALLSELECTED ( dim_activo ) ) )
+		displayFolder: 3. Historia
+		lineageTag: 097b7ef5-2bd0-545f-8631-9f58861b972d
+
+	/// Título dinámico del gráfico de cierre.
+	measure 'Título cierre' = "Precio de cierre con sus medias de 20 y 50 periodos — " & [Activo graficado]
+		displayFolder: 3. Historia
+		lineageTag: 14e6b156-8b05-517d-a716-80d814229e9a
+
+	/// Título dinámico del gráfico de RSI.
+	measure 'Título RSI' = "RSI de 14 periodos: por debajo de 30 suele estar barato, por encima de 70 caro — " & [Activo graficado]
+		displayFolder: 3. Historia
+		lineageTag: 33babbd1-7e3b-5559-9ea5-b961d1be9fb5
+
+	/// RSI por vela del activo graficado (nunca se suma ni promedia).
+	measure 'RSI (vela)' =
+			VAR t = [Activo graficado]
+			RETURN IF ( HASONEVALUE ( fact_precios[timestamp_utc] ), CALCULATE ( MAX ( fact_precios[rsi] ), dim_activo[ticker] = t ) )
+		formatString: 0.0
+		displayFolder: 3. Historia
+		lineageTag: 349c922d-664c-50e2-aa3d-2874060fd353
+
+	/// Cierre por vela del activo graficado.
+	measure 'Cierre (vela)' =
+			VAR t = [Activo graficado]
+			RETURN IF ( HASONEVALUE ( fact_precios[timestamp_utc] ), CALCULATE ( MAX ( fact_precios[close] ), dim_activo[ticker] = t ) )
+		formatString: #,0.00
+		displayFolder: 3. Historia
+		lineageTag: c41f50a4-570b-53eb-b992-52deb60d3d60
+
+	/// Media móvil de 20 velas del activo graficado, por vela.
+	measure 'MA corta (vela)' =
+			VAR t = [Activo graficado]
+			RETURN IF ( HASONEVALUE ( fact_precios[timestamp_utc] ), CALCULATE ( MAX ( fact_precios[ma_corta] ), dim_activo[ticker] = t ) )
+		formatString: #,0.00
+		displayFolder: 3. Historia
+		lineageTag: c2fa6d1c-c01f-55fb-968b-dabcb8256665
+
+	/// Media móvil de 50 velas del activo graficado, por vela.
+	measure 'MA larga (vela)' =
+			VAR t = [Activo graficado]
+			RETURN IF ( HASONEVALUE ( fact_precios[timestamp_utc] ), CALCULATE ( MAX ( fact_precios[ma_larga] ), dim_activo[ticker] = t ) )
+		formatString: #,0.00
+		displayFolder: 3. Historia
+		lineageTag: da96f141-cf88-5825-8bb4-474a560268ea
+
+	/// Resumen en texto de la señal vigente por activo (criterio: última señal registrada de cada activo, es_ultima). Describe conteos; no predice.
+	measure 'Lectura del radar' =
+			VAR n = [Activos con señal actual]
+			VAR compras = CALCULATETABLE ( VALUES ( fact_senales[ticker] ), fact_senales[es_ultima] = TRUE (), dim_senal[señal] IN { "COMPRA_FUERTE", "COMPRA_PROBABLE" }, REMOVEFILTERS ( dim_fecha ) )
+			VAR ventas = CALCULATETABLE ( VALUES ( fact_senales[ticker] ), fact_senales[es_ultima] = TRUE (), dim_senal[señal] IN { "VENTA_FUERTE", "VENTA_PROBABLE" }, REMOVEFILTERS ( dim_fecha ) )
+			VAR riesgo = CALCULATETABLE ( VALUES ( fact_senales[ticker] ), fact_senales[es_ultima] = TRUE (), dim_senal[señal] = "RIESGO_ALTO", REMOVEFILTERS ( dim_fecha ) )
+			VAR obsoletos = CALCULATETABLE ( VALUES ( fact_senales[ticker] ), fact_senales[es_ultima] = TRUE (), fact_senales[estado_dato] <> "valido", REMOVEFILTERS ( dim_fecha ) )
+			RETURN IF ( ISBLANK ( n ), "Sin activos con señal vigente en la selección actual.", "De " & n & " activos con señal vigente, " & ( COUNTROWS ( compras ) + 0 ) & " en compra" & IF ( COUNTROWS ( compras ) > 0, " (" & CONCATENATEX ( compras, fact_senales[ticker], ", ", fact_senales[ticker] ) & ")", "" ) & ", " & ( COUNTROWS ( ventas ) + 0 ) & " en venta" & IF ( COUNTROWS ( ventas ) > 0, " (" & CONCATENATEX ( ventas, fact_senales[ticker], ", ", fact_senales[ticker] ) & ")", "" ) & " y " & ( [Esperar actuales] + 0 ) & " en espera" & IF ( COUNTROWS ( riesgo ) > 0, "; " & COUNTROWS ( riesgo ) & " con riesgo alto", "" ) & ". " & IF ( COUNTROWS ( obsoletos ) > 0, "Dato obsoleto en " & CONCATENATEX ( obsoletos, fact_senales[ticker], ", ", fact_senales[ticker] ) & ": su señal no se recalculó en la última corrida.", "Todos los activos tienen dato válido en la última corrida simulada." ) )
+		displayFolder: 4. Lecturas
+		lineageTag: 2682780b-126d-5b2a-a756-0851992a0a04
+
+	/// Contexto y motivos del activo seleccionado en la tabla de Señales; si no hay selección, del activo líder por |fuerza| en la última corrida.
+	measure 'Detalle del activo seleccionado' =
+			VAR haySel = HASONEVALUE ( dim_activo[ticker] )
+			VAR candidatos =
+				FILTER (
+					CALCULATETABLE ( VALUES ( dim_activo[ticker] ), fact_senales[es_ultima] = TRUE (), REMOVEFILTERS ( dim_fecha ) ),
+					NOT ISBLANK ( [Fuerza actual] )
+				)
+			VAR lider = MAXX ( TOPN ( 1, candidatos, ABS ( [Fuerza actual] ) ), dim_activo[ticker] )
+			VAR t = IF ( haySel, SELECTEDVALUE ( dim_activo[ticker] ), lider )
+			VAR detalle =
+				CALCULATE (
+					VAR s = [Señal actual]
+					VAR TxtSenal =
+						SWITCH (
+							s,
+							"COMPRA_FUERTE", "compra fuerte: varias señales técnicas a favor",
+							"COMPRA_PROBABLE", "compra probable: algunas señales técnicas a favor",
+							"ESPERAR", "esperar: no hay una tendencia clara",
+							"VENTA_PROBABLE", "venta probable: algunas señales técnicas en contra",
+							"VENTA_FUERTE", "venta fuerte: varias señales técnicas en contra",
+							"RIESGO_ALTO", "riesgo alto: movimiento brusco con mucho volumen",
+							"SIN_DATOS", "sin datos: el historial no alcanza para calcular los indicadores",
+							[Símbolo señal actual]
+						)
+					VAR TxtDato =
+						SWITCH (
+							[Estado del dato actual],
+							"valido", "al día",
+							"obsoleto", "DESACTUALIZADO",
+							"error_proveedor", "con error del proveedor",
+							"sin_datos", "sin datos",
+							"sin dato"
+						)
+					VAR m1 = SUBSTITUTE ( [Motivos actuales], "⚠️ Veto: compra cancelada por RSI sobrecompra extrema", "Ojo: la compra se anuló porque el precio subió demasiado" )
+					VAR m2 = SUBSTITUTE ( m1, "MACD cruzó a la baja", "el impulso del precio se volvió negativo" )
+					VAR m3 = SUBSTITUTE ( m2, "MACD cruzó al alza", "el impulso del precio se volvió positivo" )
+					VAR m4 = SUBSTITUTE ( m3, "Precio sobre MA20 y MA50", "el precio está por encima de su promedio de las últimas 20 y 50 velas" )
+					VAR m5 = SUBSTITUTE ( m4, "Precio bajo MA20 y MA50", "el precio está por debajo de su promedio de las últimas 20 y 50 velas" )
+					VAR m6 = SUBSTITUTE ( m5, "Ruptura de máximo de 20", "superó su techo de las últimas 20 velas" )
+					VAR m7 = SUBSTITUTE ( m6, "Ruptura de mínimo de 20", "perforó su piso de las últimas 20 velas" )
+					VAR m8 = SUBSTITUTE ( m7, "RSI sobrecompra extrema", "subida exagerada del precio" )
+					VAR m9 = SUBSTITUTE ( m8, "RSI sobrecomprado", "precio subido de más" )
+					VAR m10 = SUBSTITUTE ( m9, "⚠️ Veto: venta cancelada por RSI sobreventa extrema", "Ojo: la venta se anuló porque el precio bajó demasiado" )
+					VAR m11 = SUBSTITUTE ( m10, "RSI sobreventa extrema", "bajada exagerada del precio" )
+					VAR m12 = SUBSTITUTE ( m11, "RSI sobrevendido", "precio bajado de más" )
+					VAR m13 = SUBSTITUTE ( m12, " con volumen (", " con mucho volumen (" )
+					RETURN
+						t & " (" & SELECTEDVALUE ( dim_activo[instrumento] ) & " · " & SELECTEDVALUE ( dim_activo[mercado] ) & " · cotiza en " & SELECTEDVALUE ( dim_activo[moneda] ) & " · velas de " & SELECTEDVALUE ( dim_activo[timeframe] ) & ")" & UNICHAR ( 10 ) & "Señal: " & TxtSenal & UNICHAR ( 10 ) & "Fuerza de la señal (de -9 a +9): " & FORMAT ( [Fuerza actual], "+0;-0;0" ) & " · RSI " & FORMAT ( [RSI última vela], "0.0" ) & " (menos de 30 = barato; más de 70 = caro)" & UNICHAR ( 10 ) & "Precio actual: " & FORMAT ( [Último cierre], "#,0.00##" ) & " · dato " & TxtDato & " · última vela " & FORMAT ( [Vela actual (UTC)], "dd/mm/yyyy hh:nn" ) & " UTC" & UNICHAR ( 10 ) & "Por qué: " & m13 & ".",
+					dim_activo[ticker] = t
+				)
+			RETURN
+				IF (
+					ISBLANK ( t ),
+					"Sin activos con señal vigente en la selección actual. Probá con otro período.",
+					IF ( haySel, detalle, "Sin selección: se muestra el activo con la señal más intensa. " & detalle )
+				)
+		displayFolder: 4. Lecturas
+		lineageTag: ef0fa965-265e-54b1-9b1d-ad29b2f779b7
+
+	/// Unidades y período del activo graficado en Mercado: instrumento, moneda, timeframe, cantidad de velas y rango de fechas filtrado.
+	measure 'Contexto del activo graficado' =
+			VAR t = [Activo graficado]
+			VAR velas = CALCULATE ( COUNTROWS ( fact_precios ), dim_activo[ticker] = t )
+			VAR desde = CALCULATE ( MIN ( fact_precios[timestamp_utc] ), dim_activo[ticker] = t )
+			VAR hasta = CALCULATE ( MAX ( fact_precios[timestamp_utc] ), dim_activo[ticker] = t )
+			RETURN IF ( ISBLANK ( t ), "Sin activo en la selección", t & " · " & LOOKUPVALUE ( dim_activo[instrumento], dim_activo[ticker], t ) & " · precios en " & LOOKUPVALUE ( dim_activo[moneda], dim_activo[ticker], t ) & " · velas de " & LOOKUPVALUE ( dim_activo[timeframe], dim_activo[ticker], t ) & " · " & ( velas + 0 ) & " velas cerradas entre " & FORMAT ( desde, "dd/mm/yyyy" ) & " y " & FORMAT ( hasta, "dd/mm/yyyy" ) & " (UTC)" )
+		displayFolder: 4. Lecturas
+		lineageTag: 13e08385-1be1-5282-8e1e-9eedccdb730a
+
+	/// Corridas en las que todos los activos tuvieron dato válido.
+	measure 'Corridas completas' = CALCULATE ( COUNTROWS ( dim_corrida ), dim_corrida[estado] = "completa" ) + 0
+		formatString: #,0
+		displayFolder: 2. Frescura y calidad
+		lineageTag: 62ac9e53-091d-5db7-8ff4-cda330db24e9
+
+	/// Corridas con al menos un activo sin dato válido o con avisos pendientes.
+	measure 'Corridas parciales' = CALCULATE ( COUNTROWS ( dim_corrida ), dim_corrida[estado] = "parcial" ) + 0
+		formatString: #,0
+		displayFolder: 2. Frescura y calidad
+		lineageTag: 13c63682-910a-5751-a285-1aff29131449
+
+	/// Corridas sin ningún activo válido o interrumpidas.
+	measure 'Corridas fallidas' = CALCULATE ( COUNTROWS ( dim_corrida ), dim_corrida[estado] IN { "fallida", "interrumpida" } ) + 0
+		formatString: #,0
+		displayFolder: 2. Frescura y calidad
+		lineageTag: c4aab4ff-926f-52a7-a122-d73faacda0fd
+
+	/// Activos cuya última vela cerrada era demasiado vieja en la última corrida.
+	measure 'Activos obsoletos (última corrida)' = CALCULATE ( DISTINCTCOUNT ( fact_resultados_activo[ticker] ), fact_resultados_activo[estado] = "obsoleto", dim_corrida[es_ultima_corrida] = TRUE (), REMOVEFILTERS ( dim_fecha ) )
+		formatString: 0
+		displayFolder: 2. Frescura y calidad
+		lineageTag: 1b0ba78c-ad05-5bd5-8996-8781bd38eb11
+
+	/// Resumen en texto de la calidad de datos en el período filtrado. Describe conteos; no explica causas.
+	measure 'Lectura de calidad' =
+			VAR total = [Consultas a proveedores]
+			VAR obs = CALCULATE ( COUNTROWS ( fact_resultados_activo ), fact_resultados_activo[estado] = "obsoleto" ) + 0
+			VAR err = [Consultas con error de proveedor] + 0
+			RETURN IF ( ISBLANK ( total ), "Sin consultas en la selección actual.", "Se hicieron " & total & " consultas a los proveedores de precios. El " & FORMAT ( [Tasa de datos válidos], "0.0%" ) & " volvió con dato útil. " & obs & " trajeron un precio viejo (desactualizado) y " & err & " fallaron por un problema del proveedor." )
+		displayFolder: 4. Lecturas
+		lineageTag: b85bd6c4-7b0a-5b0a-9505-d2e5c3a36b1e
+
+	/// Tinte claro de fondo por señal vigente (el símbolo sigue siendo la marca principal).
+	measure 'Color de fondo por señal' = SWITCH ( [Señal actual], "COMPRA_FUERTE", "#C7E0F4", "COMPRA_PROBABLE", "#DCEBF7", "ESPERAR", "#ECEFF2", "VENTA_PROBABLE", "#FBE8C8", "VENTA_FUERTE", "#F3D1BE", "RIESGO_ALTO", "#F2DCE8", "SIN_DATOS", "#F9F5C8", BLANK () )
+		displayFolder: 5. Formato
+		lineageTag: 4c3b3c97-274d-55a8-a366-e345c3104c5a
+
+	/// Tinte de fondo: ámbar para obsoleto, naranja para el resto de estados no válidos.
+	measure 'Color de fondo por estado del dato' = SWITCH ( [Estado del dato actual], "valido", BLANK (), "obsoleto", "#FBE8C8", "#F3D1BE" )
+		displayFolder: 5. Formato
+		lineageTag: 6ebac10c-2235-58af-a93b-17d4e678421a
+
+	/// Tinte de fondo por estado de la corrida.
+	measure 'Color de fondo por estado de corrida' = SWITCH ( SELECTEDVALUE ( dim_corrida[estado] ), "completa", BLANK (), "parcial", "#FBE8C8", "#F3D1BE" )
+		displayFolder: 5. Formato
+		lineageTag: 58d234a7-1ff7-55d3-8df4-251b88774d62
+
+	/// Tinte de fondo por estado de la consulta al proveedor.
+	measure 'Color de fondo por estado de consulta' = SWITCH ( SELECTEDVALUE ( fact_resultados_activo[estado] ), "valido", BLANK (), "obsoleto", "#FBE8C8", "#F3D1BE" )
+		displayFolder: 5. Formato
+		lineageTag: eb919276-c554-5fce-8154-7a4e91ba1c7e
+
+	/// Activos distintos con señal vigente (última señal de cada activo). Ignora el rango de fechas.
+	measure 'Activos monitoreados' = CALCULATE ( DISTINCTCOUNT ( fact_senales[ticker] ), fact_senales[es_ultima] = TRUE (), REMOVEFILTERS ( dim_fecha ) )
+		formatString: 0
+		displayFolder: KPIs
+		lineageTag: 5a0c7a10-0001-4c2e-9a10-000000000001
+
+	/// Activos con señal vigente COMPRA_FUERTE o COMPRA_PROBABLE.
+	measure 'Señales compra' = CALCULATE ( [Activos monitoreados], dim_senal[señal] IN { "COMPRA_FUERTE", "COMPRA_PROBABLE" } ) + 0
+		formatString: 0
+		displayFolder: KPIs
+		lineageTag: 5a0c7a10-0001-4c2e-9a10-000000000002
+
+	/// Activos con señal vigente VENTA_FUERTE o VENTA_PROBABLE.
+	measure 'Señales venta' = CALCULATE ( [Activos monitoreados], dim_senal[señal] IN { "VENTA_FUERTE", "VENTA_PROBABLE" } ) + 0
+		formatString: 0
+		displayFolder: KPIs
+		lineageTag: 5a0c7a10-0001-4c2e-9a10-000000000003
+
+	/// Activos con señal vigente ESPERAR.
+	measure 'Señales esperar' = CALCULATE ( [Activos monitoreados], dim_senal[señal] = "ESPERAR" ) + 0
+		formatString: 0
+		displayFolder: KPIs
+		lineageTag: 5a0c7a10-0001-4c2e-9a10-000000000004
+
+	/// Compras sobre el total de activos monitoreados (ignora el filtro de señal para el denominador).
+	measure '% Compra' = DIVIDE ( [Señales compra], CALCULATE ( [Activos monitoreados], REMOVEFILTERS ( dim_senal ) ) )
+		formatString: 0.0%
+		displayFolder: KPIs
+		lineageTag: 5a0c7a10-0001-4c2e-9a10-000000000005
+
+	/// Ventas sobre el total de activos monitoreados (ignora el filtro de señal para el denominador).
+	measure '% Venta' = DIVIDE ( [Señales venta], CALCULATE ( [Activos monitoreados], REMOVEFILTERS ( dim_senal ) ) )
+		formatString: 0.0%
+		displayFolder: KPIs
+		lineageTag: 5a0c7a10-0001-4c2e-9a10-000000000006
+
+	/// Fuerza promedio de las señales vigentes. Puntaje heurístico, no una probabilidad.
+	measure 'Fuerza promedio' = CALCULATE ( AVERAGE ( fact_senales[fuerza] ), fact_senales[es_ultima] = TRUE (), REMOVEFILTERS ( dim_fecha ) )
+		formatString: +0.0;-0.0;0.0
+		displayFolder: KPIs
+		lineageTag: 5a0c7a10-0001-4c2e-9a10-000000000007
+
+	/// Suma de fuerza de las observaciones en el contexto de fecha y activo. En la serie histórica cada observación aporta; no representa sólo la señal vigente.
+	measure 'Fuerza neta' = SUM ( fact_senales[fuerza] )
+		formatString: +0;-0;0
+		displayFolder: KPIs
+		lineageTag: 5a0c7a10-0001-4c2e-9a10-000000000008
+
+	/// Momento de la última corrida (UTC simulado), con formato dd MMM HH:mm.
+	measure 'Última actualización' = CALCULATE ( MAX ( fact_senales[vela_utc] ), REMOVEFILTERS ( dim_fecha ) )
+		formatString: dd mmm HH:mm
+		displayFolder: KPIs
+		lineageTag: 5a0c7a10-0001-4c2e-9a10-000000000009
+
+	/// Valor absoluto de la fuerza vigente, para ordenar rankings.
+	measure 'Fuerza absoluta' = ABS ( [Fuerza actual] )
+		formatString: 0
+		displayFolder: Señales
+		lineageTag: 5a0c7a10-0002-4c2e-9a10-000000000001
+
+	/// Texto de la señal para tablas: ícono + nombre legible.
+	measure 'Señal con ícono' =
+			VAR s = COALESCE ( SELECTEDVALUE ( dim_senal[señal] ), [Señal actual] )
+			RETURN IF ( NOT ISBLANK ( s ), [Icono señal] & "  " & SWITCH ( s, "COMPRA_FUERTE", "Compra fuerte", "COMPRA_PROBABLE", "Compra probable", "VENTA_FUERTE", "Venta fuerte", "VENTA_PROBABLE", "Venta probable", "ESPERAR", "Esperar", "RIESGO_ALTO", "Riesgo alto", "Sin datos" ) )
+		displayFolder: Señales
+		lineageTag: 5a0c7a10-0002-4c2e-9a10-000000000002
+
+	/// Marca vertical fina que se pinta con [Color señal] en el ranking.
+	measure 'Marca señal' = IF ( NOT ISBLANK ( [Fuerza actual] ), "▌" )
+		displayFolder: Señales
+		lineageTag: 5a0c7a10-0002-4c2e-9a10-000000000003
+
+	/// Texto del estado del dato: chip ámbar si está obsoleto.
+	measure 'Estado chip' = IF ( [Estado del dato actual] = "valido", "válido", IF ( NOT ISBLANK ( [Estado del dato actual] ), "● " & [Estado del dato actual] ) )
+		displayFolder: Señales
+		lineageTag: 5a0c7a10-0002-4c2e-9a10-000000000004
+
+	/// RSI de la última vela del activo graficado; sin selección única utiliza el primero visible.
+	measure 'RSI último' = VAR activo = [Activo graficado] RETURN CALCULATE ( MAX ( fact_precios[rsi] ), fact_precios[es_ultima_vela] = TRUE (), dim_activo[ticker] = activo, REMOVEFILTERS ( dim_fecha ) )
+		formatString: 0.0
+		displayFolder: Mercado
+		lineageTag: 5a0c7a10-0003-4c2e-9a10-000000000001
+
+	/// Cierre de la última vela del activo graficado (el seleccionado o, sin selección, el primero).
+	measure 'Cierre último' = VAR activo = [Activo graficado] RETURN CALCULATE ( MAX ( fact_precios[close] ), fact_precios[es_ultima_vela] = TRUE (), dim_activo[ticker] = activo, REMOVEFILTERS ( dim_fecha ) )
+		formatString: #,0.00
+		displayFolder: Mercado
+		lineageTag: 5a0c7a10-0003-4c2e-9a10-000000000002
+
+	/// Variación porcentual del cierre de la última vela del activo graficado contra la vela anterior.
+	measure 'Var % cierre' =
+			VAR t = [Activo graficado]
+			VAR ult = CALCULATE ( MAX ( fact_precios[timestamp_utc] ), dim_activo[ticker] = t, REMOVEFILTERS ( dim_fecha ) )
+			VAR prev = CALCULATE ( MAX ( fact_precios[timestamp_utc] ), dim_activo[ticker] = t, REMOVEFILTERS ( dim_fecha ), fact_precios[timestamp_utc] < ult )
+			VAR cUlt = CALCULATE ( MAX ( fact_precios[close] ), dim_activo[ticker] = t, REMOVEFILTERS ( dim_fecha ), fact_precios[timestamp_utc] = ult )
+			VAR cPrev = CALCULATE ( MAX ( fact_precios[close] ), dim_activo[ticker] = t, REMOVEFILTERS ( dim_fecha ), fact_precios[timestamp_utc] = prev )
+			RETURN DIVIDE ( cUlt - cPrev, cPrev )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Mercado
+		lineageTag: 5a0c7a10-0003-4c2e-9a10-000000000003
+
+	/// Porcentaje de activos con señal vigente calculada con dato válido.
+	measure 'Datos válidos %' = DIVIDE ( [Activos actuales con dato válido], [Activos monitoreados] )
+		formatString: 0.0%
+		displayFolder: Calidad
+		lineageTag: 5a0c7a10-0004-4c2e-9a10-000000000001
+
+	/// Activos con señal vigente cuyo dato está obsoleto.
+	measure 'Activos obsoletos' = CALCULATE ( DISTINCTCOUNT ( fact_senales[ticker] ), fact_senales[es_ultima] = TRUE (), fact_senales[estado_dato] = "obsoleto", REMOVEFILTERS ( dim_fecha ) ) + 0
+		formatString: 0
+		displayFolder: Calidad
+		lineageTag: 5a0c7a10-0004-4c2e-9a10-000000000002
+
+	/// Horas entre la última vela y la última corrida de la demo (no usa el reloj real).
+	measure 'Horas desde última vela' =
+			VAR vela = CALCULATE ( MAX ( fact_senales[vela_utc] ), fact_senales[es_ultima] = TRUE (), REMOVEFILTERS ( dim_fecha ) )
+			VAR ref = CALCULATE ( MAX ( fact_senales[generado_utc] ), REMOVEFILTERS ( fact_senales ), REMOVEFILTERS ( dim_activo ), REMOVEFILTERS ( dim_senal ), REMOVEFILTERS ( dim_fecha ) )
+			RETURN IF ( NOT ISBLANK ( vela ), DATEDIFF ( vela, ref, MINUTE ) / 60 )
+		formatString: #,0.0
+		displayFolder: Calidad
+		lineageTag: 5a0c7a10-0004-4c2e-9a10-000000000003
+
+	/// HEX por señal: compra verde, venta rojo, esperar gris (contraste 4,8:1 sobre blanco).
+	measure 'Color señal' =
+			VAR s = COALESCE ( SELECTEDVALUE ( dim_senal[señal] ), [Señal actual] )
+			RETURN SWITCH ( TRUE (), s IN { "COMPRA_FUERTE", "COMPRA_PROBABLE" }, "#16A34A", s IN { "VENTA_FUERTE", "VENTA_PROBABLE" }, "#DC2626", "#64748B" )
+		displayFolder: UI
+		lineageTag: 5a0c7a10-0005-4c2e-9a10-000000000001
+
+	/// HEX de la fuerza de la señal: verde si es positiva, rojo si es negativa, gris si es cero.
+	measure 'Color fuerza' =
+			VAR f = COALESCE ( [Fuerza actual], [Fuerza promedio] )
+			RETURN IF ( NOT ISBLANK ( f ), SWITCH ( TRUE (), f > 0, "#16A34A", f < 0, "#DC2626", "#94A3B8" ) )
+		displayFolder: UI
+		lineageTag: 5a0c7a10-0005-4c2e-9a10-000000000002
+
+	/// HEX por estado del dato: obsoleto ámbar, válido gris.
+	measure 'Color estado' = IF ( [Activos obsoletos] > 0, "#F59E0B", "#94A3B8" )
+		displayFolder: UI
+		lineageTag: 5a0c7a10-0005-4c2e-9a10-000000000003
+
+	/// Ícono por señal: ▲ compra, ▼ venta, ■ esperar.
+	measure 'Icono señal' =
+			VAR s = COALESCE ( SELECTEDVALUE ( dim_senal[señal] ), [Señal actual] )
+			RETURN SWITCH ( TRUE (), s IN { "COMPRA_FUERTE", "COMPRA_PROBABLE" }, "▲", s IN { "VENTA_FUERTE", "VENTA_PROBABLE" }, "▼", "■" )
+		displayFolder: UI
+		lineageTag: 5a0c7a10-0005-4c2e-9a10-000000000004
+
+	/// Fondo de la celda de señal: el color de la señal al 15 % sobre blanco.
+	measure 'Fondo señal' = SWITCH ( [Color señal], "#16A34A", "#DCF1E4", "#DC2626", "#FADEDE", "#EFF1F4" )
+		displayFolder: UI
+		lineageTag: 5a0c7a10-0005-4c2e-9a10-000000000005
+
+	/// Fondo del chip de estado: ámbar suave si hay datos obsoletos.
+	measure 'Fondo estado' = IF ( [Activos obsoletos] > 0, "#FDF0DA" )
+		displayFolder: UI
+		lineageTag: 5a0c7a10-0005-4c2e-9a10-000000000006
+
+	/// Resumen de una línea: activos seguidos, señales de compra y de venta, en espera y última corrida simulada.
+	measure 'Título dinámico' =
+			VAR c = [Señales compra]
+			VAR v = [Señales venta]
+			RETURN [Activos monitoreados] & " activos seguidos · " & c & IF ( c = 1, " señal", " señales" ) & " de compra · " & v & IF ( v = 1, " señal", " señales" ) & " de venta · " & [Señales esperar] & " en espera · última corrida simulada " & FORMAT ( [Última actualización (UTC)], "dd mmm HH:mm" ) & " UTC"
+		displayFolder: UI
+		lineageTag: 5a0c7a10-0005-4c2e-9a10-000000000007
+
+	/// Subtítulo con los filtros activos (solo los que dejan valores visibles) o, sin filtros, el resumen dinámico.
+	measure 'Subtítulo filtros' =
+			VAR tipo = IF ( ISFILTERED ( dim_activo[Tipo de activo] ), CONCATENATEX ( VALUES ( dim_activo[Tipo de activo] ), dim_activo[Tipo de activo], ", " ) )
+			VAR fuente = IF ( ISFILTERED ( dim_activo[Fuente de datos] ), CONCATENATEX ( VALUES ( dim_activo[Fuente de datos] ), dim_activo[Fuente de datos], ", " ) )
+			VAR vela = IF ( ISFILTERED ( dim_activo[Vela] ), CONCATENATEX ( VALUES ( dim_activo[Vela] ), dim_activo[Vela], ", " ) )
+			VAR activo = IF ( ISFILTERED ( dim_activo[ticker] ), CONCATENATEX ( VALUES ( dim_activo[ticker] ), dim_activo[ticker], ", " ) )
+			VAR senal = IF ( ISFILTERED ( dim_senal[señal] ), CONCATENATEX ( VALUES ( dim_senal[señal] ), dim_senal[señal], ", " ) )
+			VAR fechas = IF ( ISFILTERED ( dim_fecha[fecha] ) && NOT ISBLANK ( MIN ( dim_fecha[fecha] ) ), FORMAT ( MIN ( dim_fecha[fecha] ), "dd mmm" ) & " a " & FORMAT ( MAX ( dim_fecha[fecha] ), "dd mmm" ) )
+			VAR s =
+				IF ( NOT ISBLANK ( tipo ) && tipo <> "", " · Tipo: " & tipo, "" )
+					& IF ( NOT ISBLANK ( fuente ) && fuente <> "", " · Fuente: " & fuente, "" )
+					& IF ( NOT ISBLANK ( vela ) && vela <> "", " · Vela: " & vela, "" )
+					& IF ( NOT ISBLANK ( activo ) && activo <> "", " · Activo: " & activo, "" )
+					& IF ( NOT ISBLANK ( senal ) && senal <> "", " · Señal: " & senal, "" )
+					& IF ( NOT ISBLANK ( fechas ), " · Fechas: " & fechas, "" )
+			RETURN IF ( s = "", [Título dinámico], "Filtros: " & MID ( s, 4, 500 ) )
+		displayFolder: UI
+		lineageTag: 5a0c7a10-0005-4c2e-9a10-000000000008
+
+	/// Activos cuya última señal del día (por día de corrida) fue de compra. En blanco en días sin corridas; ignora el filtro de señal.
+	measure 'Activos en compra (día)' =
+			SUMX (
+				VALUES ( dim_activo[ticker] ),
+				VAR ult = CALCULATE ( MAX ( fact_senales[generado_utc] ), REMOVEFILTERS ( dim_senal ) )
+				VAR s = CALCULATE ( MAX ( fact_senales[señal] ), fact_senales[generado_utc] = ult, REMOVEFILTERS ( dim_senal ) )
+				RETURN IF ( NOT ISBLANK ( ult ) && s IN { "COMPRA_FUERTE", "COMPRA_PROBABLE" }, 1 )
+			)
+		formatString: 0
+		displayFolder: 3. Historia
+		lineageTag: 15545289-8312-5bad-9c98-f7ac888abe69
+
+	/// Activos cuya última señal del día (por día de corrida) fue esperar. En blanco en días sin corridas; ignora el filtro de señal.
+	measure 'Activos en espera (día)' =
+			SUMX (
+				VALUES ( dim_activo[ticker] ),
+				VAR ult = CALCULATE ( MAX ( fact_senales[generado_utc] ), REMOVEFILTERS ( dim_senal ) )
+				VAR s = CALCULATE ( MAX ( fact_senales[señal] ), fact_senales[generado_utc] = ult, REMOVEFILTERS ( dim_senal ) )
+				RETURN IF ( NOT ISBLANK ( ult ) && s = "ESPERAR", 1 )
+			)
+		formatString: 0
+		displayFolder: 3. Historia
+		lineageTag: bfe2e5d1-28ed-504d-8566-a493f50ea79a
+
+	/// Activos cuya última señal del día (por día de corrida) fue de venta. En blanco en días sin corridas; ignora el filtro de señal.
+	measure 'Activos en venta (día)' =
+			SUMX (
+				VALUES ( dim_activo[ticker] ),
+				VAR ult = CALCULATE ( MAX ( fact_senales[generado_utc] ), REMOVEFILTERS ( dim_senal ) )
+				VAR s = CALCULATE ( MAX ( fact_senales[señal] ), fact_senales[generado_utc] = ult, REMOVEFILTERS ( dim_senal ) )
+				RETURN IF ( NOT ISBLANK ( ult ) && s IN { "VENTA_FUERTE", "VENTA_PROBABLE" }, 1 )
+			)
+		formatString: 0
+		displayFolder: 3. Historia
+		lineageTag: 7f82c73a-c179-5d26-b0f6-fddf17fb5b9e
+
+	/// Texto del pie de página con la fecha y hora UTC de la última corrida simulada.
+	measure 'Pie de actualización' = "Última corrida simulada: " & FORMAT ( CALCULATE ( [Última actualización (UTC)], REMOVEFILTERS () ), "dd mmm yyyy HH:mm" ) & " UTC"
+		displayFolder: UI
+		lineageTag: b453a227-a772-5c34-9100-96e52fccd664
+
+	/// Activos con cada señal vigente, con 0 en lugar de blanco para que la tabla de reglas muestre las siete señales.
+	measure 'Activos con la señal hoy' = [Activos con señal actual] + 0
+		formatString: 0
+		displayFolder: 1. Señal actual
+		lineageTag: 16efb84c-d615-579f-8d60-0f89d47843cd
+
+	/// English version of Lectura del radar: plain-language summary of the current signals.
+	measure 'Radar reading' =
+			VAR n = [Activos con señal actual]
+			VAR compras = CALCULATETABLE ( VALUES ( fact_senales[ticker] ), fact_senales[es_ultima] = TRUE (), dim_senal[señal] IN { "COMPRA_FUERTE", "COMPRA_PROBABLE" }, REMOVEFILTERS ( dim_fecha ) )
+			VAR ventas = CALCULATETABLE ( VALUES ( fact_senales[ticker] ), fact_senales[es_ultima] = TRUE (), dim_senal[señal] IN { "VENTA_FUERTE", "VENTA_PROBABLE" }, REMOVEFILTERS ( dim_fecha ) )
+			VAR riesgo = CALCULATETABLE ( VALUES ( fact_senales[ticker] ), fact_senales[es_ultima] = TRUE (), dim_senal[señal] = "RIESGO_ALTO", REMOVEFILTERS ( dim_fecha ) )
+			VAR obsoletos = CALCULATETABLE ( VALUES ( fact_senales[ticker] ), fact_senales[es_ultima] = TRUE (), fact_senales[estado_dato] <> "valido", REMOVEFILTERS ( dim_fecha ) )
+			RETURN IF ( ISBLANK ( n ), "No assets with a current signal in this selection.", "Out of " & n & " assets with a current signal, " & ( COUNTROWS ( compras ) + 0 ) & " point to buy" & IF ( COUNTROWS ( compras ) > 0, " (" & CONCATENATEX ( compras, fact_senales[ticker], ", ", fact_senales[ticker] ) & ")", "" ) & ", " & ( COUNTROWS ( ventas ) + 0 ) & " to sell" & IF ( COUNTROWS ( ventas ) > 0, " (" & CONCATENATEX ( ventas, fact_senales[ticker], ", ", fact_senales[ticker] ) & ")", "" ) & " and " & ( [Esperar actuales] + 0 ) & " to hold" & IF ( COUNTROWS ( riesgo ) > 0, "; " & COUNTROWS ( riesgo ) & " flagged as high risk", "" ) & ". " & IF ( COUNTROWS ( obsoletos ) > 0, "Stale data for " & CONCATENATEX ( obsoletos, fact_senales[ticker], ", ", fact_senales[ticker] ) & ": its signal was not recalculated in the last run.", "Every asset had valid data in the last simulated run." ) )
+		displayFolder: EN
+		lineageTag: 87a64bad-8efc-5eba-a23b-813408688563
+
+	/// English version of Detalle del activo seleccionado: context, signal, strength, price and reasons of the chosen asset.
+	measure 'Selected asset detail' =
+			VAR haySel = HASONEVALUE ( dim_activo[ticker] )
+			VAR candidatos = FILTER ( CALCULATETABLE ( VALUES ( dim_activo[ticker] ), fact_senales[es_ultima] = TRUE (), REMOVEFILTERS ( dim_fecha ) ), NOT ISBLANK ( [Fuerza actual] ) )
+			VAR lider = MAXX ( TOPN ( 1, candidatos, ABS ( [Fuerza actual] ) ), dim_activo[ticker] )
+			VAR t = IF ( haySel, SELECTEDVALUE ( dim_activo[ticker] ), lider )
+			VAR detalle =
+				CALCULATE (
+					VAR sg = [Señal actual]
+					VAR TxtSenal = SWITCH ( sg, "COMPRA_FUERTE", "strong buy: several technical signals in favour", "COMPRA_PROBABLE", "probable buy: some technical signals in favour", "ESPERAR", "hold: no clear trend", "VENTA_PROBABLE", "probable sell: some technical signals against", "VENTA_FUERTE", "strong sell: several technical signals against", "RIESGO_ALTO", "high risk: sharp move on heavy volume", "SIN_DATOS", "no data: not enough history to compute the indicators", [Símbolo señal actual] )
+					VAR TxtDato = SWITCH ( [Estado del dato actual], "valido", "up to date", "obsoleto", "STALE", "error_proveedor", "provider error", "sin_datos", "no data", "no data" )
+					VAR m0 = [Motivos actuales]
+					VAR m1 = SUBSTITUTE ( m0, "⚠️ Veto: compra cancelada por RSI sobrecompra extrema", "Heads up: the buy was cancelled because the price rose too much" )
+					VAR m2 = SUBSTITUTE ( m1, "⚠️ Veto: venta cancelada por RSI sobreventa extrema", "Heads up: the sell was cancelled because the price fell too much" )
+					VAR m3 = SUBSTITUTE ( m2, "MACD cruzó a la baja", "price momentum turned negative" )
+					VAR m4 = SUBSTITUTE ( m3, "MACD cruzó al alza", "price momentum turned positive" )
+					VAR m5 = SUBSTITUTE ( m4, "Precio sobre MA20 y MA50", "the price is above its 20- and 50-candle averages" )
+					VAR m6 = SUBSTITUTE ( m5, "Precio bajo MA20 y MA50", "the price is below its 20- and 50-candle averages" )
+					VAR m7 = SUBSTITUTE ( m6, "Ruptura de máximo de 20", "it broke above its 20-candle high" )
+					VAR m8 = SUBSTITUTE ( m7, "Ruptura de mínimo de 20", "it broke below its 20-candle low" )
+					VAR m9 = SUBSTITUTE ( m8, "RSI sobrecompra extrema", "the price rose far too fast" )
+					VAR m10 = SUBSTITUTE ( m9, "RSI sobrecomprado", "the price rose too fast" )
+					VAR m11 = SUBSTITUTE ( m10, "RSI sobreventa extrema", "the price fell far too fast" )
+					VAR m12 = SUBSTITUTE ( m11, "RSI sobrevendido", "the price fell too fast" )
+					VAR m13 = SUBSTITUTE ( m12, " con volumen (", " on volume (" )
+					VAR m14 = SUBSTITUTE ( m13, "Volumen alto", "heavy volume" )
+					VAR m15 = SUBSTITUTE ( m14, "Sin condiciones destacadas", "no notable conditions" )
+					RETURN t & " (" & SELECTEDVALUE ( dim_activo[Asset type] ) & " · " & SELECTEDVALUE ( dim_activo[mercado] ) & " · quoted in " & SELECTEDVALUE ( dim_activo[moneda] ) & " · " & SELECTEDVALUE ( dim_activo[Candle] ) & " candles)" & UNICHAR ( 10 ) & "Signal: " & TxtSenal & UNICHAR ( 10 ) & "Signal strength (-9 to +9): " & FORMAT ( [Fuerza actual], "+0;-0;0" ) & " · RSI " & FORMAT ( [RSI última vela], "0.0", "en-US" ) & " (below 30 = cheap; above 70 = expensive)" & UNICHAR ( 10 ) & "Current price: " & FORMAT ( [Último cierre], "#,0.00##", "en-US" ) & " · data " & TxtDato & " · last candle " & FORMAT ( [Vela actual (UTC)], "yyyy-mm-dd hh:nn" ) & " UTC" & UNICHAR ( 10 ) & "Why: " & m15 & ".",
+					dim_activo[ticker] = t
+				)
+			RETURN IF ( ISBLANK ( t ), "No assets with a current signal in this selection. Try another period.", IF ( haySel, detalle, "No selection: showing the asset with the strongest signal. " & detalle ) )
+		displayFolder: EN
+		lineageTag: f639a5eb-dbd0-51fd-a682-a741980ee6dc
+
+	/// English version of Lectura de calidad.
+	measure 'Data quality reading' =
+			VAR total = [Consultas a proveedores]
+			VAR obs = CALCULATE ( COUNTROWS ( fact_resultados_activo ), fact_resultados_activo[estado] = "obsoleto" ) + 0
+			VAR err = [Consultas con error de proveedor] + 0
+			RETURN IF ( ISBLANK ( total ), "No provider queries in this selection.", "The radar made " & total & " queries to the price providers. " & FORMAT ( [Tasa de datos válidos], "0.0%", "en-US" ) & " came back with usable data. " & obs & " returned a stale price and " & err & " failed because of a provider problem." )
+		displayFolder: EN
+		lineageTag: 037ea47c-621e-5146-b514-ad4a1665e715
+
+	/// English version of Título dinámico.
+	measure 'Dynamic title' =
+			VAR c = [Señales compra]
+			VAR v = [Señales venta]
+			RETURN [Activos monitoreados] & " assets tracked · " & c & IF ( c = 1, " buy signal", " buy signals" ) & " · " & v & IF ( v = 1, " sell signal", " sell signals" ) & " · " & [Señales esperar] & " on hold · last simulated run " & FORMAT ( [Última actualización (UTC)], "dd mmm HH:mm", "en-US" ) & " UTC"
+		displayFolder: EN
+		lineageTag: 648e777c-8029-5e71-8310-8e9286edf9c3
+
+	/// English version of Subtítulo filtros (uses the English slicer columns).
+	measure 'Filters subtitle' =
+			VAR tipo = IF ( ISFILTERED ( dim_activo[Asset type] ), CONCATENATEX ( VALUES ( dim_activo[Asset type] ), dim_activo[Asset type], ", " ) )
+			VAR fuente = IF ( ISFILTERED ( dim_activo[Data source] ), CONCATENATEX ( VALUES ( dim_activo[Data source] ), dim_activo[Data source], ", " ) )
+			VAR vela = IF ( ISFILTERED ( dim_activo[Candle] ), CONCATENATEX ( VALUES ( dim_activo[Candle] ), dim_activo[Candle], ", " ) )
+			VAR activo = IF ( ISFILTERED ( dim_activo[ticker] ), CONCATENATEX ( VALUES ( dim_activo[ticker] ), dim_activo[ticker], ", " ) )
+			VAR senal = IF ( ISFILTERED ( dim_senal[Signal] ), CONCATENATEX ( VALUES ( dim_senal[Signal] ), dim_senal[Signal], ", " ) )
+			VAR fechas = IF ( ISFILTERED ( dim_fecha[fecha] ) && NOT ISBLANK ( MIN ( dim_fecha[fecha] ) ), FORMAT ( MIN ( dim_fecha[fecha] ), "dd mmm", "en-US" ) & " to " & FORMAT ( MAX ( dim_fecha[fecha] ), "dd mmm", "en-US" ) )
+			VAR s =
+				IF ( NOT ISBLANK ( tipo ) && tipo <> "", " · Type: " & tipo, "" )
+					& IF ( NOT ISBLANK ( fuente ) && fuente <> "", " · Source: " & fuente, "" )
+					& IF ( NOT ISBLANK ( vela ) && vela <> "", " · Candle: " & vela, "" )
+					& IF ( NOT ISBLANK ( activo ) && activo <> "", " · Asset: " & activo, "" )
+					& IF ( NOT ISBLANK ( senal ) && senal <> "", " · Signal: " & senal, "" )
+					& IF ( NOT ISBLANK ( fechas ), " · Dates: " & fechas, "" )
+			RETURN IF ( s = "", [Dynamic title], "Filters: " & MID ( s, 4, 500 ) )
+		displayFolder: EN
+		lineageTag: 2ad30f21-2ae8-5e22-938c-87617937aef9
+
+	/// English version of Pie de actualización.
+	measure 'Footer update' = "Last simulated run: " & FORMAT ( CALCULATE ( [Última actualización (UTC)], REMOVEFILTERS () ), "dd mmm yyyy HH:mm", "en-US" ) & " UTC"
+		displayFolder: EN
+		lineageTag: 323293d8-aaab-5201-a6ad-5ae6b7994a95
+
+	/// English version of Señal con ícono (table cell: icon + signal name).
+	measure 'Signal with icon' =
+			VAR sg = COALESCE ( SELECTEDVALUE ( dim_senal[señal] ), [Señal actual] )
+			RETURN IF ( NOT ISBLANK ( sg ), [Icono señal] & "  " & SWITCH ( sg, "COMPRA_FUERTE", "Strong buy", "COMPRA_PROBABLE", "Probable buy", "VENTA_FUERTE", "Strong sell", "VENTA_PROBABLE", "Probable sell", "ESPERAR", "Hold", "RIESGO_ALTO", "High risk", "No data" ) )
+		displayFolder: EN
+		lineageTag: 1a4c441c-58f4-51ee-b8c3-9c3d28a881fb
+
+	/// English version of Estado chip.
+	measure 'Status chip' = IF ( [Estado del dato actual] = "valido", "valid", IF ( NOT ISBLANK ( [Estado del dato actual] ), "● " & SWITCH ( [Estado del dato actual], "obsoleto", "stale", "error_proveedor", "provider error", "sin_datos", "no data", [Estado del dato actual] ) ) )
+		displayFolder: EN
+		lineageTag: 64db826a-3aa4-5b33-88a4-e126cf2b5f1d
+
+	/// English version of Título cierre.
+	measure 'Close chart title' = "Closing price with its 20- and 50-period averages — " & [Activo graficado]
+		displayFolder: EN
+		lineageTag: 96cdb4a0-8a79-54ee-875c-ab9c62843b73
+
+	/// English version of Contexto del activo graficado.
+	measure 'Charted asset context' =
+			VAR t = [Activo graficado]
+			VAR velas = CALCULATE ( COUNTROWS ( fact_precios ), dim_activo[ticker] = t )
+			VAR desde = CALCULATE ( MIN ( fact_precios[timestamp_utc] ), dim_activo[ticker] = t )
+			VAR hasta = CALCULATE ( MAX ( fact_precios[timestamp_utc] ), dim_activo[ticker] = t )
+			RETURN IF ( ISBLANK ( t ), "No asset in the selection", t & " · " & LOOKUPVALUE ( dim_activo[Asset type], dim_activo[ticker], t ) & " · prices in " & LOOKUPVALUE ( dim_activo[moneda], dim_activo[ticker], t ) & " · " & LOOKUPVALUE ( dim_activo[Candle], dim_activo[ticker], t ) & " candles · " & ( velas + 0 ) & " closed candles between " & FORMAT ( desde, "yyyy-mm-dd" ) & " and " & FORMAT ( hasta, "yyyy-mm-dd" ) & " (UTC)" )
+		displayFolder: EN
+		lineageTag: 2e9e4c54-02e0-591e-b007-b756d9497dfe
+
+	column Value
+		dataType: int64
+		isHidden
+		lineageTag: a907f211-137b-5337-9cdd-b573eb6bd5dc
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Value]
+
+		annotation SummarizationSetBy = User
+
+	partition _Medidas = calculated
+		mode: import
+		source = {1}
+

@@ -1,0 +1,4 @@
+# Herramientas de desarrollo (tests offline y análisis estático).
+#   pip install -r requirements.txt -r requirements-dev.txt -c constraints.txt
+pytest==9.0.3
+ruff==0.17.1

@@ -1,0 +1,27 @@
+[project]
+name = "radar-senales"
+version = "2.0.0"
+description = "Radar heurístico de señales técnicas (cripto y acciones) con SQLite, backtest y demo para Power BI. No es asesoramiento financiero."
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+extend-exclude = ["output", "demo/salida"]
+
+[tool.ruff.lint]
+# E/W: estilo básico, F: pyflakes (errores reales), B: bugbear, S: bandit (seguridad)
+select = ["E", "W", "F", "B", "S"]
+ignore = [
+    "E501",   # largo de línea: el código existente usa líneas largas en SQL y mensajes
+    "S101",   # assert en tests
+    "S608",   # SQL armado con nombres de tablas/columnas internos (nunca con datos del usuario)
+    "B905",   # zip(strict=...) no aporta en este código
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S", "B"]

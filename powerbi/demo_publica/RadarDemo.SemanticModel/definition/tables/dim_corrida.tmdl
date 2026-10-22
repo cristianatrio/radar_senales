@@ -1,0 +1,111 @@
+/// Una fila por ejecución del radar (run_id), con estado y conteos de activos por resultado.
+table dim_corrida
+	lineageTag: 5567c3c1-4837-5adf-9865-3ab2b4eb348e
+
+	column run_id
+		dataType: string
+		isHidden
+		lineageTag: 0c2a6bcc-8cef-5dae-87a9-db9033f4a805
+		summarizeBy: none
+		sourceColumn: run_id
+
+		annotation SummarizationSetBy = User
+
+	column inicio_utc
+		dataType: dateTime
+		formatString: yyyy-mm-dd hh:nn:ss
+		lineageTag: 54c04282-d6f2-5f3d-af11-6efd72afd67e
+		summarizeBy: none
+		sourceColumn: inicio_utc
+
+		annotation SummarizationSetBy = User
+
+	column fin_utc
+		dataType: dateTime
+		formatString: yyyy-mm-dd hh:nn:ss
+		lineageTag: 4e8a2a17-eb74-5737-a47d-b19ba1f17aee
+		summarizeBy: none
+		sourceColumn: fin_utc
+
+		annotation SummarizationSetBy = User
+
+	column estado
+		dataType: string
+		lineageTag: 85a9077c-788d-5931-80cd-8cecba34caab
+		summarizeBy: none
+		sourceColumn: estado
+
+		annotation SummarizationSetBy = User
+
+	column activos_total
+		dataType: int64
+		formatString: 0
+		lineageTag: dce83762-eb50-529a-8351-dee3116c3df9
+		summarizeBy: none
+		sourceColumn: activos_total
+
+		annotation SummarizationSetBy = User
+
+	column activos_validos
+		dataType: int64
+		formatString: 0
+		lineageTag: 28c17997-e4f7-5f3d-8900-1aac943fda2b
+		summarizeBy: none
+		sourceColumn: activos_validos
+
+		annotation SummarizationSetBy = User
+
+	column activos_obsoletos
+		dataType: int64
+		formatString: 0
+		lineageTag: d24ec9a0-db2f-5cf6-b98b-df3e08415341
+		summarizeBy: none
+		sourceColumn: activos_obsoletos
+
+		annotation SummarizationSetBy = User
+
+	column activos_sin_datos
+		dataType: int64
+		formatString: 0
+		lineageTag: f3e07831-14fd-50ef-9822-307c89786b72
+		summarizeBy: none
+		sourceColumn: activos_sin_datos
+
+		annotation SummarizationSetBy = User
+
+	column activos_fallidos
+		dataType: int64
+		formatString: 0
+		lineageTag: c9516405-b3b1-5c68-a36e-0910d563f1d0
+		summarizeBy: none
+		sourceColumn: activos_fallidos
+
+		annotation SummarizationSetBy = User
+
+	column detalle
+		dataType: string
+		lineageTag: ccbd3cb5-4132-5fa9-a40c-b7d5151ff7ab
+		summarizeBy: none
+		sourceColumn: detalle
+
+		annotation SummarizationSetBy = User
+
+	column es_ultima_corrida
+		dataType: boolean
+		isHidden
+		lineageTag: 42ff5000-8578-58d2-9ec9-9c93aa9edd78
+		summarizeBy: none
+		sourceColumn: es_ultima_corrida
+
+		annotation SummarizationSetBy = User
+
+	partition dim_corrida = m
+		mode: import
+		source =
+				let
+				    Tabla = CargarCsv("dim_corrida.csv", {{"run_id", type text}, {"inicio_utc", type datetime}, {"fin_utc", type datetime}, {"estado", type text}, {"activos_total", Int64.Type}, {"activos_validos", Int64.Type}, {"activos_obsoletos", Int64.Type}, {"activos_sin_datos", Int64.Type}, {"activos_fallidos", Int64.Type}, {"detalle", type text}, {"es_ultima_corrida", type logical}})
+				in
+				    Tabla
+
+	annotation PBI_ResultType = Table
+

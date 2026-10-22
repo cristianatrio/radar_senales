@@ -1,0 +1,5 @@
+# Finales de línea uniformes (LF en el repo; Windows convierte al extraer).
+* text=auto eol=lf
+*.bat text eol=crlf
+*.png binary
+*.abf binary

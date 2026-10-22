@@ -1,0 +1,8 @@
+señal,orden,simbolo,descripcion
+COMPRA_FUERTE,1,▲▲,Puntaje ≥ 4 con al menos 2 familias alcistas
+COMPRA_PROBABLE,2,▲,Puntaje entre 2 y 3
+ESPERAR,3,■,Puntaje entre -1 y 1
+VENTA_PROBABLE,4,▼,Puntaje entre -3 y -2
+VENTA_FUERTE,5,▼▼,Puntaje ≤ -4 con al menos 2 familias bajistas
+RIESGO_ALTO,6,⚠,Ruptura con volumen alto y puntaje débil (|puntaje| < 3)
+SIN_DATOS,7,∅,Historial insuficiente para calcular todos los indicadores

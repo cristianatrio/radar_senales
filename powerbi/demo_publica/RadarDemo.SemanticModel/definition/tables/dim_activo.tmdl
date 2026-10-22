@@ -1,0 +1,126 @@
+/// Un activo por fila: ticker ficticio, tipo, mercado, moneda y timeframe. es_sintetico = TRUE en toda la demo.
+table dim_activo
+	lineageTag: 912eeff6-e1f8-58d3-b47c-7f628d5c7775
+
+	column ticker
+		dataType: string
+		lineageTag: 9cf77f09-103d-5e58-affc-ac920fd5740f
+		summarizeBy: none
+		sourceColumn: ticker
+
+		annotation SummarizationSetBy = User
+
+	column tipo
+		dataType: string
+		lineageTag: 0c1c89b6-bb3c-5595-b8f5-15fa5533493a
+		summarizeBy: none
+		sourceColumn: tipo
+
+		annotation SummarizationSetBy = User
+
+	column instrumento
+		dataType: string
+		lineageTag: 19c7ec80-a269-5d1a-a7d4-75b90ed2a104
+		summarizeBy: none
+		sourceColumn: instrumento
+
+		annotation SummarizationSetBy = User
+
+	column mercado
+		dataType: string
+		lineageTag: f2069ca1-bbe9-517a-9fce-effcf0b04d00
+		summarizeBy: none
+		sourceColumn: mercado
+
+		annotation SummarizationSetBy = User
+
+	column moneda
+		dataType: string
+		lineageTag: 47174af1-ca5f-5631-95a9-dc3eaf584795
+		summarizeBy: none
+		sourceColumn: moneda
+
+		annotation SummarizationSetBy = User
+
+	column fuente
+		dataType: string
+		lineageTag: 0e1d70bd-d8d0-5f06-a6e7-4937e22b610e
+		summarizeBy: none
+		sourceColumn: fuente
+
+		annotation SummarizationSetBy = User
+
+	column timeframe
+		dataType: string
+		lineageTag: 3e6e0cbe-e5a1-5138-8f8f-5a1897091fd8
+		summarizeBy: none
+		sourceColumn: timeframe
+
+		annotation SummarizationSetBy = User
+
+	column es_sintetico
+		dataType: boolean
+		lineageTag: 0217daaf-b767-550d-82a0-981450bc38e5
+		summarizeBy: none
+		sourceColumn: es_sintetico
+
+		annotation SummarizationSetBy = User
+
+	/// Tipo de activo en palabras (Cripto, Acción argentina, Acción EE. UU., CEDEAR); deriva de tipo.
+	column 'Tipo de activo' = SWITCH ( [tipo], "cripto", "Cripto", "accion_arg", "Acción argentina", "accion_us", "Acción EE. UU.", "cedear", "CEDEAR", [tipo] )
+		dataType: string
+		lineageTag: e5232180-7973-5ce7-bf03-d41579c62b40
+		summarizeBy: none
+
+		annotation SummarizationSetBy = User
+
+	/// Proveedor del dato en palabras; deriva de fuente.
+	column 'Fuente de datos' = SWITCH ( [fuente], "binance", "Binance", "yahoo", "Yahoo Finance", [fuente] )
+		dataType: string
+		lineageTag: f38b1a43-c6eb-5dd7-bf53-8a3e35ad4e24
+		summarizeBy: none
+
+		annotation SummarizationSetBy = User
+
+	/// Duración de cada vela en palabras (1 hora, 1 día); deriva de timeframe.
+	column 'Vela' = SWITCH ( [timeframe], "1h", "1 hora", "1d", "1 día", [timeframe] )
+		dataType: string
+		lineageTag: 93f965b1-9156-5e6f-a9c4-401459098aeb
+		summarizeBy: none
+
+		annotation SummarizationSetBy = User
+
+	/// Asset type in words (English pages); derived from tipo.
+	column 'Asset type' = SWITCH ( [tipo], "cripto", "Crypto", "accion_arg", "Argentine stock", "accion_us", "US stock", "cedear", "CEDEAR", [tipo] )
+		dataType: string
+		lineageTag: dccf2cec-bdb1-589d-8fee-c92654523c3f
+		summarizeBy: none
+
+		annotation SummarizationSetBy = User
+
+	/// Data provider in words (English pages); derived from fuente.
+	column 'Data source' = SWITCH ( [fuente], "binance", "Binance", "yahoo", "Yahoo Finance", [fuente] )
+		dataType: string
+		lineageTag: 8ab041d8-9519-5bad-a433-790beaf364e2
+		summarizeBy: none
+
+		annotation SummarizationSetBy = User
+
+	/// Candle length in words (English pages); derived from timeframe.
+	column 'Candle' = SWITCH ( [timeframe], "1h", "1 hour", "1d", "1 day", [timeframe] )
+		dataType: string
+		lineageTag: 70a749c6-dbc1-58e4-8779-15402758867b
+		summarizeBy: none
+
+		annotation SummarizationSetBy = User
+
+	partition dim_activo = m
+		mode: import
+		source =
+				let
+				    Tabla = CargarCsv("dim_activo.csv", {{"ticker", type text}, {"tipo", type text}, {"instrumento", type text}, {"mercado", type text}, {"moneda", type text}, {"fuente", type text}, {"timeframe", type text}, {"es_sintetico", type logical}})
+				in
+				    Tabla
+
+	annotation PBI_ResultType = Table
+

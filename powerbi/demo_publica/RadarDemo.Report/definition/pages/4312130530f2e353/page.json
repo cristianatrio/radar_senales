@@ -1,0 +1,205 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "4312130530f2e353",
+  "displayName": "Resumen",
+  "displayOption": "FitToPage",
+  "height": 720,
+  "width": 1280,
+  "visualInteractions": [
+    {
+      "source": "flt_tipo",
+      "target": "flt_fuente",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_tipo",
+      "target": "flt_timeframe",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_tipo",
+      "target": "flt_senal",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_fuente",
+      "target": "flt_tipo",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_fuente",
+      "target": "flt_timeframe",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_fuente",
+      "target": "flt_senal",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_timeframe",
+      "target": "flt_tipo",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_timeframe",
+      "target": "flt_fuente",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_timeframe",
+      "target": "flt_senal",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_senal",
+      "target": "flt_tipo",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_senal",
+      "target": "flt_fuente",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_senal",
+      "target": "flt_timeframe",
+      "type": "NoFilter"
+    },
+    {
+      "source": "graf_senales_dia",
+      "target": "graf_senales_tipo",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_senales_dia",
+      "target": "graf_fuerza_activo",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_senales_dia",
+      "target": "kpi_activos",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_senales_dia",
+      "target": "kpi_compra",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_senales_dia",
+      "target": "kpi_venta",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_senales_dia",
+      "target": "kpi_espera",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_senales_dia",
+      "target": "kpi_validos",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_senales_dia",
+      "target": "card_lectura",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_senales_dia",
+      "target": "hdr_subtitulo",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_senales_tipo",
+      "target": "graf_senales_dia",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_senales_tipo",
+      "target": "graf_fuerza_activo",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_senales_tipo",
+      "target": "kpi_activos",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_senales_tipo",
+      "target": "kpi_compra",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_senales_tipo",
+      "target": "kpi_venta",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_senales_tipo",
+      "target": "kpi_espera",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_senales_tipo",
+      "target": "kpi_validos",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_senales_tipo",
+      "target": "card_lectura",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_senales_tipo",
+      "target": "hdr_subtitulo",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_fuerza_activo",
+      "target": "graf_senales_dia",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_fuerza_activo",
+      "target": "graf_senales_tipo",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_fuerza_activo",
+      "target": "kpi_activos",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_fuerza_activo",
+      "target": "kpi_compra",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_fuerza_activo",
+      "target": "kpi_venta",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_fuerza_activo",
+      "target": "kpi_espera",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_fuerza_activo",
+      "target": "kpi_validos",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_fuerza_activo",
+      "target": "card_lectura",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_fuerza_activo",
+      "target": "hdr_subtitulo",
+      "type": "DataFilter"
+    }
+  ]
+}

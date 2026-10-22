@@ -1,0 +1,26 @@
+model Model
+	culture: es-AR
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: es-AR
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["CarpetaDatos", "CargarCsv", "dim_activo", "dim_fecha", "dim_senal", "dim_corrida", "fact_senales", "fact_precios", "fact_resultados_activo"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table dim_activo
+ref table dim_fecha
+ref table dim_senal
+ref table dim_corrida
+ref table fact_senales
+ref table fact_precios
+ref table fact_resultados_activo
+ref table _Medidas
+
+ref cultureInfo es-AR
+

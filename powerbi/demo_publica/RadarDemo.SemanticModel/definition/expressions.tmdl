@@ -1,0 +1,19 @@
+/// Carpeta con los CSV del modelo estrella, terminada en barra. Cambiala a la ubicación de tu clon del repositorio.
+expression CarpetaDatos = "D:\radar_senales\powerbi\datos_demo\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 6b855208-bdb1-54f8-9f68-c0d3966265f6
+
+	annotation PBI_ResultType = Text
+
+/// Lee un CSV UTF-8 con punto decimal y fechas ISO; los tipos se aplican con cultura en-US.
+expression CargarCsv =
+		(archivo as text, tipos as list) as table =>
+		let
+		    Origen = Csv.Document(File.Contents(CarpetaDatos & archivo), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+		    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+		    Tipado = Table.TransformColumnTypes(Encabezados, tipos, "en-US")
+		in
+		    Tipado
+	lineageTag: 1073b73a-af75-54d5-9e1a-33346b363385
+
+	annotation PBI_ResultType = Function
+

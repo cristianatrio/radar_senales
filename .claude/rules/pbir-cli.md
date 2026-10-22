@@ -1,0 +1,38 @@
+# Aprendizajes sobre `pbir` (0.9.32) en este proyecto
+
+- `new report --thick` no crea `.SemanticModel`: escribir el TMDL aparte y apuntar `definition.pbir` con `byPath`. `pbir model -d` lee el TMDL sin Desktop y valida campos.
+- `pages rename --to` cambia carpeta y displayName pero no `name` ni `pages.json`; dejar carpetas con id hex. Las rutas aceptan el nombre visible (con `ñ`).
+- `add page` crea una página NUEVA aunque exista otra con el mismo nombre visible (rutas ambiguas): buscar la página por displayName en `pages/*/page.json` y usar `R/<hex>.Page`. Usar `--no-title`.
+- `visuals axis --no-showTitle` no existe: `set "V.categoryAxis.showAxisTitle" false` (ídem `valueAxis.start/end`). `pageNavigator` no tiene `title`; `shape.shapeType` no es propiedad.
+- `visuals position`/`add visual` rechazan solapes: `PBIR_ALLOW_OVERLAP=1` para capas intencionales (banda + textos).
+- `add filter -v slicer --values X` no es selección por defecto; quitar con `rm ".../dim.campo.Filter"`.
+- Títulos dinámicos: `visuals cf "V" --measure "title.text Tabla.Medida"` (quitar antes el literal con `set ...title.text --remove`).
+- `tableEx`: `total.totals false`, `columnHeaders.autoSizeColumnWidth false` + `columnAdjustment growToFit`. `cardVisual`: `label.show false`, `value.labelDisplayUnits 1`, `value.fontSize` (96 px → 28). Slicer "Between" de fechas necesita ≥80 px. `lineChart.lineStyles.areaShow false`.
+- Textos con color: usar `shape` (`text.text/fontColor/fontSize`), no textbox. `add title/subtitle` crean `Title.Visual`/`Subtitle.Visual`.
+- Texto en `shape`: Desktop 2.159 solo lo renderiza si `text.show/text/fontColor/...` están escritos **dos veces**, sin selector y con `text.id(default).*`; con una sola de las dos formas queda invisible.
+- El comodín `*.*.padding` (10) también aplica a `shape`, `actionButton` y `pageNavigator` y los aplasta: `theme set-formatting "R" "actionButton.*.padding.top" 0` (×4 lados, ×3 tipos). El tema por tipo `title.show=false` sí funciona.
+- `pageNavigator`: solo acepta propiedades con estado (`fill.id(default|hover|selected).fillColor`, `text.id(selected).bold`, `outline.id(default).show`); `fill.show`/`text.show` sin selector fallan.
+- Botón de obtención de detalles sin selección se dibuja en estado `disabled`: definir `fill/text.id(disabled)` (y un `text.id(disabled).text` explicativo).
+- `cardVisual` con texto largo: `value.textWrap` solo actúa si la tarjeta tiene altura de sobra (reserva espacio de etiqueta aunque `label.show=false`); ≥120 px para 2–3 líneas a 10 pt.
+- Botón de obtención de detalles: `visualLink.drillthroughSection` debe ser el `name` hex de la página (`pages/<hex>/page.json`), no el nombre visible; con el nombre visible el botón queda deshabilitado.
+- Texto largo con medida: `card` clásica (`-d "Values:Tabla.Medida"`, `wordWrap.show true`, `categoryLabels.show false`) ajusta línea y respeta saltos; `cardVisual` trunca y el texto de `shape` no acepta medida aunque `visuals cf text.text` lo escriba.
+- Selector de un solo valor estricto (`selection.strictSingleSelect`) rompe la obtención de detalles sobre el mismo campo: usar `singleSelect` sin estricto.
+- Texto largo con medida (22/10): `cardVisual` con `value.textWrap` sí ajusta línea y alinea a la izquierda (hasta ~6 líneas a 13 pt si la altura alcanza, ~230 px con título); `multiRowCard` NO ajusta línea (una línea + «…»); `accentBar` en `cardVisual` deja la tarjeta en blanco. El relleno propio de `cardVisual` es `fillCustom` (no `fill`).
+- Selectores: `header.textSize` e `items.textSize` (no `fontSize`); con título de contenedor + encabezado en 64 px no entra el desplegable: usar `cont(None)`.
+- Barras: `categoryAxis.maxMarginFactor` (%) evita etiquetas cortadas; `preferredCategoryWidth` + ocultar `valueAxis` hace entrar 7 barras en 248 px.
+- `shape`: relleno y contorno también deben escribirse dos veces (sin selector y con `id: default`); solo con selector no se dibujan.
+- Obtención de detalles + selector sincronizado sobre el mismo campo: el filtro de drillthrough queda pegado en la página destino y al cambiar el selector la página queda vacía. Usar botón `PageNavigation` + grupo de sincronización.
+- Desktop al cerrar con cambios externos pregunta «¿Desea guardar los cambios?» (diálogo 577×217, título «Microsoft Power BI Desktop»): «No guardar» está en (367,167) relativo.
+- `definition.pbism` acepta `$schema` …/semanticModel/definitionProperties/1.0.0/schema.json (elimina el único error de `pbir validate`).
+- Restablecer selectores sincronizados: el marcador con `objects.remove general.filter` (aunque abarque todas las páginas) no los limpia; el botón con `visualLink.type = 'ClearAllSlicers'` (enum oficial junto a `ApplyAllSlicers`) sí.
+- Formas con texto (22/10, portada y guía): poner `leftMargin/rightMargin/topMargin/bottomMargin` en 0; aun así el texto que no entra se corta con «…» (≈40 caracteres por línea a 12 pt en 264 px; 3 líneas en 64 px). Textos cortos antes que cajas altas.
+- Tarjeta clicable: `actionButton` con `text.show=false` y `fill` con `transparency 100` (hover: `#EEF2FF`, transparency 40) superpuesto a una `shape` blanca con `outline`; navega con `PageNavigation`.
+- Páginas nuevas desde el generador: crear `page.json` (schema page/2.1.0, name hex de 16, displayName, FitToPage, 1280×720) y agregarlas a `pages.json.pageOrder`; Desktop las toma sin más.
+- Tema: `border.show=true` con `color` y `radius` y `dropShadow` (`preset BottomRight`, `transparency 93`) dan tarjetas con borde redondeado y sombra suave; apagar `border`/`dropShadow` en los contenedores sin fondo (subtítulo, pie, selectores del panel).
+- Zonas sombreadas en un gráfico de líneas: `y1AxisReferenceLine` (selector `{"id": "1"}`, `value`, `displayName`, `style dashed`, `dataLabelShow` + `dataLabelText 'ValueAndName'`, `shadeShow`, `shadeRegion 'after'|'before'`, `shadeColor`, `shadeTransparency 90`). Render verificado en 2.159.
+- Deslizador de zoom: `zoom` = `{show, showOnCategoryAxis, showOnValueAxis false, showLabels false, showTooltip}`; ocupa ~24 px al pie del gráfico.
+- Botones: estados `hover`/`pressed` en `fill` y `text` (con `transparency 0`), `glow` con selector `hover` (`color`, `transparency 60`, `shadowBlur 12`). Un botón transparente con `outline` índigo en hover hace clicable una tarjeta sin apagar su contenido (el relleno con transparencia 40 la "apaga").
+- Pestañas de página en Desktop maximizado con 6 páginas: x = 263, 362, 468, 574, 679, 770 (coordenadas de la imagen de la ventana); con 4 páginas eran 276, 382, 488, 593. Verificar el nombre de la página en la captura antes de dar por buena una pestaña.
+- Informe bilingüe (22/10): páginas duplicadas por idioma con `visibility: HiddenInViewMode` en las EN y botón `PageNavigation` a la página gemela; los nombres de página hex deben ser únicos y de 16 caracteres. Las medidas de texto necesitan versión EN con `FORMAT(..., "en-US")`; los números de tablas siguen la cultura del modelo (es-AR) y el desplegable del selector dice «Todas» (localización de Desktop), no se puede cambiar por página. La navegación con `actionButton` (uno por página, el actual en relleno primario) reemplaza al `pageNavigator`, que mostraría las 12 páginas.
+- Automatización: tras navegar con Ctrl+clic, Desktop a veces no toma el siguiente Ctrl+clic si llega antes de ~3 s; repetir el recorrido si una captura no coincide con la página esperada. Posiciones de los botones de navegación en el lienzo: 536, 624, 712, 800, 888, 976; EN/ES en 1044 (y = 36).
+

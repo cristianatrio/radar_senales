@@ -1,0 +1,139 @@
+/// Resultado de cada consulta a proveedor por activo y corrida: valido, obsoleto, sin_datos, historial_insuficiente, error_proveedor o dato_invalido.
+table fact_resultados_activo
+	lineageTag: 175ebc99-8ff6-5725-bd18-9392ddefc53e
+
+	column run_id
+		dataType: string
+		isHidden
+		lineageTag: d6659291-d3d6-514c-9998-12b06e929339
+		summarizeBy: none
+		sourceColumn: run_id
+
+		annotation SummarizationSetBy = User
+
+	column ticker
+		dataType: string
+		isHidden
+		lineageTag: abefc839-7fa9-558b-84a4-c29f04f10dde
+		summarizeBy: none
+		sourceColumn: ticker
+
+		annotation SummarizationSetBy = User
+
+	column tipo
+		dataType: string
+		isHidden
+		lineageTag: 6c0e4674-8692-510c-8f68-49f59077a426
+		summarizeBy: none
+		sourceColumn: tipo
+
+		annotation SummarizationSetBy = User
+
+	column fuente
+		dataType: string
+		isHidden
+		lineageTag: 0b1571de-528d-5fb5-80dd-921c0a760b85
+		summarizeBy: none
+		sourceColumn: fuente
+
+		annotation SummarizationSetBy = User
+
+	column timeframe
+		dataType: string
+		isHidden
+		lineageTag: 95093048-e2eb-57b9-a786-e1f4d57c3d76
+		summarizeBy: none
+		sourceColumn: timeframe
+
+		annotation SummarizationSetBy = User
+
+	column estado
+		dataType: string
+		lineageTag: 20bf09cc-3c00-5cf2-9304-b7d0c9b05712
+		summarizeBy: none
+		sourceColumn: estado
+
+		annotation SummarizationSetBy = User
+
+	column capturado_utc
+		dataType: dateTime
+		formatString: yyyy-mm-dd hh:nn:ss
+		lineageTag: cbddb65f-4934-5bc6-8d40-0b1310c5f3b1
+		summarizeBy: none
+		sourceColumn: capturado_utc
+
+		annotation SummarizationSetBy = User
+
+	column vela_utc
+		dataType: dateTime
+		formatString: yyyy-mm-dd hh:nn:ss
+		lineageTag: 7a9ab03f-f41a-5520-b483-3baed915c7a7
+		summarizeBy: none
+		sourceColumn: vela_utc
+
+		annotation SummarizationSetBy = User
+
+	column velas_recibidas
+		dataType: int64
+		formatString: 0
+		lineageTag: 7ba4b142-2613-5774-855f-6e50b1ee45bc
+		summarizeBy: sum
+		sourceColumn: velas_recibidas
+
+		annotation SummarizationSetBy = User
+
+	column velas_descartadas
+		dataType: int64
+		formatString: 0
+		lineageTag: 776dd546-59c6-5f16-8b0b-432f4405ad11
+		summarizeBy: sum
+		sourceColumn: velas_descartadas
+
+		annotation SummarizationSetBy = User
+
+	column velas_abiertas
+		dataType: int64
+		formatString: 0
+		lineageTag: 78aa509e-a7d5-5abe-a0a9-518ebefa793b
+		summarizeBy: sum
+		sourceColumn: velas_abiertas
+
+		annotation SummarizationSetBy = User
+
+	column moneda
+		dataType: string
+		isHidden
+		lineageTag: 8db1a43a-9fc7-54b6-85df-d73433b71bb0
+		summarizeBy: none
+		sourceColumn: moneda
+
+		annotation SummarizationSetBy = User
+
+	column detalle
+		dataType: string
+		lineageTag: dc59468f-c88d-590b-a738-8770fc588c80
+		summarizeBy: none
+		sourceColumn: detalle
+
+		annotation SummarizationSetBy = User
+
+	column fecha
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: c28f4650-d008-5e33-a9c8-98ba2efe1f49
+		summarizeBy: none
+		sourceColumn: fecha
+
+		annotation SummarizationSetBy = User
+
+	partition fact_resultados_activo = m
+		mode: import
+		source =
+				let
+				    Tabla = CargarCsv("fact_resultados_activo.csv", {{"run_id", type text}, {"ticker", type text}, {"tipo", type text}, {"fuente", type text}, {"timeframe", type text}, {"estado", type text}, {"capturado_utc", type datetime}, {"vela_utc", type datetime}, {"velas_recibidas", Int64.Type}, {"velas_descartadas", Int64.Type}, {"velas_abiertas", Int64.Type}, {"moneda", type text}, {"detalle", type text}, {"fecha", type date}})
+				in
+				    Tabla
+
+	annotation PBI_ResultType = Table
+

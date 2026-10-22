@@ -1,0 +1,8 @@
+# SHA-256 de cada CSV. Datos SINTÉTICOS (demo pública)
+69dbe54d447f93d10de4e0a73e0c6d4d37ae133d85d087a32f71ce1ce2ef4861  dim_activo.csv  (7 filas)
+fa86e3a0a5d25bb85cbab44bedc035eb447486a7f0d0cb79aee083374adc1ef1  dim_fecha.csv  (287 filas)
+eb37111144a75ca80bbd33c609a8a4474ad44a4f838da0a53bc6362d60620242  dim_senal.csv  (7 filas)
+66c5360a0921609189561877b8cb884beb47b2f1210aeee9c58feee62b7bd0fa  dim_corrida.csv  (168 filas)
+02ea4bd00e60f8f31243d4c52d06b49c552d15faf5098fa70a7699aea5c0d943  fact_senales.csv  (1157 filas)
+a3f13c233b01af761ecb2e20bc8b35f9ce9e014c06468c9389307896412f409c  fact_precios.csv  (1835 filas)
+e1e267df756e7ada35540cc11b4cd705b4c5fcddae85ca1388ff91c99ef02bbc  fact_resultados_activo.csv  (1176 filas)

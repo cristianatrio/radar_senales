@@ -1,0 +1,166 @@
+/// Una vela cerrada por activo y timestamp UTC, con indicadores. es_ultima_vela marca la última vela de cada activo.
+table fact_precios
+	lineageTag: d2283279-31a2-5878-b253-e49b284aed83
+
+	column ticker
+		dataType: string
+		isHidden
+		lineageTag: 363a534b-0269-5395-abfd-e747f8e588f2
+		summarizeBy: none
+		sourceColumn: ticker
+
+		annotation SummarizationSetBy = User
+
+	column timeframe
+		dataType: string
+		isHidden
+		lineageTag: 5a41cee0-d665-55c3-acb7-128cd6da3391
+		summarizeBy: none
+		sourceColumn: timeframe
+
+		annotation SummarizationSetBy = User
+
+	column timestamp_utc
+		dataType: dateTime
+		formatString: yyyy-mm-dd hh:nn:ss
+		lineageTag: 90a7ed20-55bf-56bd-a4df-bc2640046c96
+		summarizeBy: none
+		sourceColumn: timestamp_utc
+
+		annotation SummarizationSetBy = User
+
+	column timestamp_original
+		dataType: string
+		lineageTag: 415ca8d0-22d7-5033-8aec-312f85321de3
+		summarizeBy: none
+		sourceColumn: timestamp_original
+
+		annotation SummarizationSetBy = User
+
+	column open
+		dataType: double
+		formatString: #,0.0000
+		lineageTag: 6dfc5833-2af9-5e1a-9b9c-d7980cc4b14e
+		summarizeBy: none
+		sourceColumn: open
+
+		annotation SummarizationSetBy = User
+
+	column high
+		dataType: double
+		formatString: #,0.0000
+		lineageTag: a467206f-6dfe-590c-b9a1-7b306aca8375
+		summarizeBy: none
+		sourceColumn: high
+
+		annotation SummarizationSetBy = User
+
+	column low
+		dataType: double
+		formatString: #,0.0000
+		lineageTag: 9c37a408-13db-57bf-b765-2b5365680084
+		summarizeBy: none
+		sourceColumn: low
+
+		annotation SummarizationSetBy = User
+
+	column close
+		dataType: double
+		formatString: #,0.0000
+		lineageTag: 45d2de7a-d653-5c63-844d-ad74094c2c44
+		summarizeBy: none
+		sourceColumn: close
+
+		annotation SummarizationSetBy = User
+
+	column volume
+		dataType: double
+		formatString: #,0
+		lineageTag: 66ac0b34-7adb-59ec-a165-dc53c268e9c6
+		summarizeBy: none
+		sourceColumn: volume
+
+		annotation SummarizationSetBy = User
+
+	column rsi
+		dataType: double
+		formatString: #,0.00
+		lineageTag: d32e09e4-8714-5ab9-8112-439b62cb6df1
+		summarizeBy: none
+		sourceColumn: rsi
+
+		annotation SummarizationSetBy = User
+
+	column macd_hist
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 9c9dcb19-0b21-57e4-89fc-9ad4378b9cc9
+		summarizeBy: none
+		sourceColumn: macd_hist
+
+		annotation SummarizationSetBy = User
+
+	column ma_corta
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 3a07514c-ae8d-5068-8a55-9227aae24fa6
+		summarizeBy: none
+		sourceColumn: ma_corta
+
+		annotation SummarizationSetBy = User
+
+	column ma_larga
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 3509ff04-888d-57b6-ab53-f5e294efc3de
+		summarizeBy: none
+		sourceColumn: ma_larga
+
+		annotation SummarizationSetBy = User
+
+	column vol_relativo
+		dataType: double
+		formatString: #,0.00
+		lineageTag: fd880c2a-12d2-5a2e-8d0a-07fd47c4f22f
+		summarizeBy: none
+		sourceColumn: vol_relativo
+
+		annotation SummarizationSetBy = User
+
+	column ajuste
+		dataType: string
+		lineageTag: b9989937-82a8-51ce-a75a-538742f2b852
+		summarizeBy: none
+		sourceColumn: ajuste
+
+		annotation SummarizationSetBy = User
+
+	column es_ultima_vela
+		dataType: boolean
+		isHidden
+		lineageTag: 1b67c228-3ad4-5bd0-9294-6faf9998c558
+		summarizeBy: none
+		sourceColumn: es_ultima_vela
+
+		annotation SummarizationSetBy = User
+
+	column fecha
+		dataType: dateTime
+		isHidden
+		formatString: yyyy-mm-dd
+		lineageTag: 7ddc26fa-e169-5c8b-96fb-37866d47a01c
+		summarizeBy: none
+		sourceColumn: fecha
+
+		annotation SummarizationSetBy = User
+
+	partition fact_precios = m
+		mode: import
+		source =
+				let
+				    Tabla = CargarCsv("fact_precios.csv", {{"ticker", type text}, {"timeframe", type text}, {"timestamp_utc", type datetime}, {"timestamp_original", type text}, {"open", type number}, {"high", type number}, {"low", type number}, {"close", type number}, {"volume", type number}, {"rsi", type number}, {"macd_hist", type number}, {"ma_corta", type number}, {"ma_larga", type number}, {"vol_relativo", type number}, {"ajuste", type text}, {"es_ultima_vela", type logical}, {"fecha", type date}})
+				in
+				    Tabla
+
+	annotation PBI_ResultType = Table
+

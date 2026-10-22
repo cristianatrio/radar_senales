@@ -1,0 +1,190 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "2f53da19923c44ba",
+  "displayName": "Mercado",
+  "width": 1280,
+  "height": 720,
+  "displayOption": "FitToPage",
+  "visualInteractions": [
+    {
+      "source": "flt_tipo",
+      "target": "flt_fuente",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_tipo",
+      "target": "flt_timeframe",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_tipo",
+      "target": "flt_senal",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_tipo",
+      "target": "chips_activo",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_fuente",
+      "target": "flt_tipo",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_fuente",
+      "target": "flt_timeframe",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_fuente",
+      "target": "flt_senal",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_fuente",
+      "target": "chips_activo",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_timeframe",
+      "target": "flt_tipo",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_timeframe",
+      "target": "flt_fuente",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_timeframe",
+      "target": "flt_senal",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_timeframe",
+      "target": "chips_activo",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_senal",
+      "target": "flt_tipo",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_senal",
+      "target": "flt_fuente",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_senal",
+      "target": "flt_timeframe",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_senal",
+      "target": "chips_activo",
+      "type": "NoFilter"
+    },
+    {
+      "source": "chips_activo",
+      "target": "flt_tipo",
+      "type": "NoFilter"
+    },
+    {
+      "source": "chips_activo",
+      "target": "flt_fuente",
+      "type": "NoFilter"
+    },
+    {
+      "source": "chips_activo",
+      "target": "flt_timeframe",
+      "type": "NoFilter"
+    },
+    {
+      "source": "chips_activo",
+      "target": "flt_senal",
+      "type": "NoFilter"
+    },
+    {
+      "source": "chips_activo",
+      "target": "graf_cierre",
+      "type": "DataFilter"
+    },
+    {
+      "source": "chips_activo",
+      "target": "graf_rsi",
+      "type": "DataFilter"
+    },
+    {
+      "source": "chips_activo",
+      "target": "kpi_var_cierre",
+      "type": "DataFilter"
+    },
+    {
+      "source": "chips_activo",
+      "target": "kpi_rsi_ultimo",
+      "type": "DataFilter"
+    },
+    {
+      "source": "chips_activo",
+      "target": "kpi_cierre_ultimo",
+      "type": "DataFilter"
+    },
+    {
+      "source": "chips_activo",
+      "target": "hdr_subtitulo",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_cierre",
+      "target": "graf_rsi",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_cierre",
+      "target": "kpi_var_cierre",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_cierre",
+      "target": "kpi_rsi_ultimo",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_cierre",
+      "target": "kpi_cierre_ultimo",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_cierre",
+      "target": "hdr_subtitulo",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_rsi",
+      "target": "graf_cierre",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_rsi",
+      "target": "kpi_var_cierre",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_rsi",
+      "target": "kpi_rsi_ultimo",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_rsi",
+      "target": "kpi_cierre_ultimo",
+      "type": "DataFilter"
+    },
+    {
+      "source": "graf_rsi",
+      "target": "hdr_subtitulo",
+      "type": "DataFilter"
+    }
+  ]
+}

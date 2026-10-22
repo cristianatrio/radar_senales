@@ -1,0 +1,115 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "179abaca766ff951",
+  "displayName": "Señales",
+  "width": 1280,
+  "height": 720,
+  "displayOption": "FitToPage",
+  "visualInteractions": [
+    {
+      "source": "flt_tipo",
+      "target": "flt_fuente",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_tipo",
+      "target": "flt_timeframe",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_tipo",
+      "target": "flt_senal",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_fuente",
+      "target": "flt_tipo",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_fuente",
+      "target": "flt_timeframe",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_fuente",
+      "target": "flt_senal",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_timeframe",
+      "target": "flt_tipo",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_timeframe",
+      "target": "flt_fuente",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_timeframe",
+      "target": "flt_senal",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_senal",
+      "target": "flt_tipo",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_senal",
+      "target": "flt_fuente",
+      "type": "NoFilter"
+    },
+    {
+      "source": "flt_senal",
+      "target": "flt_timeframe",
+      "type": "NoFilter"
+    },
+    {
+      "source": "tabla_senales",
+      "target": "card_detalle_activo",
+      "type": "DataFilter"
+    },
+    {
+      "source": "tabla_senales",
+      "target": "hdr_subtitulo",
+      "type": "DataFilter"
+    },
+    {
+      "source": "sel_activo",
+      "target": "card_detalle_activo",
+      "type": "DataFilter"
+    },
+    {
+      "source": "sel_activo",
+      "target": "hdr_subtitulo",
+      "type": "DataFilter"
+    },
+    {
+      "source": "sel_activo",
+      "target": "tabla_senales",
+      "type": "NoFilter"
+    },
+    {
+      "source": "sel_activo",
+      "target": "flt_tipo",
+      "type": "NoFilter"
+    },
+    {
+      "source": "sel_activo",
+      "target": "flt_fuente",
+      "type": "NoFilter"
+    },
+    {
+      "source": "sel_activo",
+      "target": "flt_timeframe",
+      "type": "NoFilter"
+    },
+    {
+      "source": "sel_activo",
+      "target": "flt_senal",
+      "type": "NoFilter"
+    }
+  ]
+}

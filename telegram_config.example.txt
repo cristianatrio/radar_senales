@@ -1,0 +1,13 @@
+# Plantilla SIN secretos. Preferí variables de entorno (TELEGRAM_TOKEN y
+# TELEGRAM_CHAT_ID). Si usás archivo: copiá este a telegram_config.txt
+# (ignorado por git) y completá los valores.
+#
+# 1. Hablá con @BotFather en Telegram y creá un bot: te da el TOKEN.
+# 2. Mandale un mensaje a tu bot y obtené tu CHAT_ID (por ejemplo con @userinfobot).
+# 3. Probá el envío con: python verificar_telegram.py --enviar
+#
+# Si un token se publicó alguna vez (repo, captura, log), revocalo con
+# @BotFather (/revoke) y generá uno nuevo: borrarlo del archivo no alcanza.
+
+TOKEN=
+CHAT_ID=
