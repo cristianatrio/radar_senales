@@ -1,6 +1,6 @@
 # Versiones exactas de dependencias transitivas (entorno probado: Python 3.10, Windows).
 # Generado desde el entorno local con importlib.metadata; usar con -c constraints.txt.
-beautifulsoup4==4.14.3
+beautifulsoup4==4.15.0
 certifi==2026.10.19
 cffi==2.1.1
 charset-normalizer==3.5.2
