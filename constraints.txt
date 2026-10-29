@@ -23,7 +23,7 @@ requests==2.33.0
 rich==15.0.0
 six==1.17.0
 soupsieve==2.9.0
-typing-extensions==4.15.0
+typing-extensions==4.16.0
 tzdata==2026.5
 urllib3==2.8.0
 websockets==16.0
