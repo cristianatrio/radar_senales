@@ -14,7 +14,7 @@ numpy==2.2.6
 pandas==2.3.3
 peewee==4.0.5
 platformdirs==4.5.1
-protobuf==6.33.5
+protobuf==7.36.2
 pycparser==3.11
 pygments==2.20.0
 python-dateutil==2.9.0.post0
